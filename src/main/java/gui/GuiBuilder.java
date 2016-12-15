@@ -1,21 +1,33 @@
 package gui;
 
-public class GuiBuilder implements Handler {
-    private GameScreen gameScreen1;
-    private GameScreen gameScreen2;
+import core.Core;
+import core.GameData;
+
+public class GuiBuilder {
+    public GameScreen s1;
+    public GameScreen s2;
+    private Core core;
 
     public GuiBuilder() {
-        gameScreen1 = new GameScreen(new BattleField());
-        gameScreen1.setHandler(this);
-//        gameScreen2 = new GameScreen(new BattleField());
+
     }
 
-    public void build() {
-        gameScreen1.build();
-//        gameScreen2.build();
+    public void build(GameData gameData, String userName1, String userName2) {
+        s1 = new GameScreen(userName1);
+        s2 = new GameScreen(userName2);
+
+        s1.addListener(this);
+        s2.addListener(this);
+
+        String data = gameData.data;
+        s1.build(data);
     }
 
-    public void handle(PlayerAction action) {
+    public void handlePlayerAction(PlayerAction action) {
+        core.handleAction(action);
+    }
 
+    public void setCore(Core core) {
+        this.core = core;
     }
 }

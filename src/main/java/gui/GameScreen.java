@@ -1,21 +1,40 @@
 package gui;
 
-import javax.swing.*;
-import java.awt.event.*;
-import javax.swing.event.TableModelListener;
 
-import javax.swing.table.DefaultTableCellRenderer;
+public class GameScreen {
+    private String playerName;
+    private GuiBuilder handler;
+    private Field field;
 
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+    public GameScreen(String playerName) {
+        this.playerName = playerName;
+        field = new Field();
+        field.addListener(this);
+    }
+
+    void addListener(GuiBuilder handler) {
+        this.handler = handler;
+    }
+
+    public void build(String data) {
+        field.display(data);
+        field.testEvent();
+    }
+
+    public void handleFieldCellClick(Point point) {
+        PlayerAction action = new PlayerAction(playerName);
+        action.setPoint(point);
+        action.setAction("select point");
+        handler.handlePlayerAction(action);
+    }
+}
 
 
+
+
+
+
+/*
 public class GameScreen {
     private JFrame mainFrame;
     private JLabel statusLabel;
@@ -82,3 +101,4 @@ public class GameScreen {
         this.handler = handler;
     }
 }
+*/

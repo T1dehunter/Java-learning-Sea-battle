@@ -24,6 +24,25 @@ import java.util.Set;
 
 //http://skipy-ru.livejournal.com/1577.html
 
+class Field {
+    private GameScreen handler;
+
+    void addListener(GameScreen handler) {
+        this.handler = handler;
+    }
+
+    public void display(String s) {
+        System.out.print("Field displays -> " + s);
+    }
+
+    public void testEvent() {
+        System.out.print("\nUser made some event");
+        handler.handleFieldCellClick(new Point(9, 9));
+    }
+}
+
+
+
 
 
 
