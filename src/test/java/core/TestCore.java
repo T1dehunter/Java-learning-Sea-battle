@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-
 public class TestCore extends TestCase {
     private Core core;
 
@@ -29,8 +28,6 @@ public class TestCore extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        System.out.println("Setting it up!");
-
         this.player1 = new Player("Vasya");
         this.player2 = new Player("Petya");
 
