@@ -38,4 +38,8 @@ public class GuiBuilder {
         this.gameFieldWidth = width;
         this.getGameFieldHeight = height;
     }
+
+    public void update(GameData gameData) {
+
+    }
 }

@@ -2,9 +2,7 @@ package core;
 
 import gui.GuiBuilder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import gui.PlayerAction;
 import gui.Point;
@@ -71,4 +69,22 @@ public class Core {
             System.out.print("\nCore gets action: user select cell by cords " + point.getRow() + " : " + point.getCell());
         }
     }
+
+    private Map buildPlayerShips() {
+        HashMap map = new HashMap();
+
+        map.put("test", "test");
+
+        return map;
+    }
+
+
+
+
+
+
+
+
+
+
 }
