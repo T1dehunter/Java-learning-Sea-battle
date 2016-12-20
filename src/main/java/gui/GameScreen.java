@@ -1,9 +1,13 @@
 package gui;
 
+import core.*;
+import core.Point;
+
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 
 public class GameScreen {
@@ -19,9 +23,10 @@ public class GameScreen {
 //    private Handler handler;
 
 
-    public GameScreen(String playerName) {
+    public GameScreen(String playerName, ArrayList<Point> cells) {
         this.playerName = playerName;
-        field = new GameField();
+
+        field = new GameField(cells);
         field.addListener(this);
     }
 
@@ -87,7 +92,7 @@ public class GameScreen {
 
     }
 
-    public void handleFieldCellClick(Point point) {
+    public void handleFieldCellClick(core.Point point) {
         PlayerAction action = new PlayerAction(playerName);
         action.setPoint(point);
         action.setAction("select point");
