@@ -2,32 +2,40 @@ package gui;
 
 import core.Core;
 import core.GameData;
+import core.PlayerData;
 
 public class GuiBuilder {
     public GameScreen s1;
     public GameScreen s2;
-    private Core core;
+    private Core handler;
+
+    // ??
+    private Integer gameFieldWidth;
+    private Integer getGameFieldHeight;
 
     public GuiBuilder() {
 
     }
 
     public void build(GameData gameData, String userName1, String userName2) {
-        s1 = new GameScreen(userName1);
-        s2 = new GameScreen(userName2);
-
-        s1.addListener(this);
-        s2.addListener(this);
-
-        String data = gameData.data;
-        s1.build(data);
+        for (PlayerData playerData: gameData.getPlayersData()) {
+            s1 = new GameScreen("Test User");
+            s1.addListener(this);
+            s1.build(playerData.getMessage());
+        }
     }
 
     public void handlePlayerAction(PlayerAction action) {
-        core.handleAction(action);
+        handler.handleAction(action);
     }
 
-    public void setCore(Core core) {
-        this.core = core;
+    public void setHandler(Core core) {
+        this.handler = core;
+    }
+
+    //??
+    public void setGameFieldSize(Integer width, Integer height) {
+        this.gameFieldWidth = width;
+        this.getGameFieldHeight = height;
     }
 }

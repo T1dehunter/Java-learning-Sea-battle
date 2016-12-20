@@ -1,9 +1,8 @@
-import adapters.GUIAppAdapter;
 import core.Core;
 import core.Player;
 import gui.GameScreen;
 //import gui.TestGuiElements;
-import gui.BattleField;
+//import gui.BattleField;
 import gui.GuiBuilder;
 
 import java.util.ArrayList;
