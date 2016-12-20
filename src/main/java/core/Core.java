@@ -2,9 +2,7 @@ package core;
 
 import gui.GuiBuilder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import gui.PlayerAction;
 import gui.Point;
@@ -13,13 +11,16 @@ public class Core {
     private GuiBuilder builder;
     private ArrayList<Player> players;
 
+    final int GAME_FIELD_WIDTH = 10;
+    final int GAME_FIELD_HEIGHT = 10;
+
     public Core(GuiBuilder builder, ArrayList<Player> players) {
         this.builder = builder;
         this.players = players;
 
-//        this.players.get(2)
+        builder.setHandler(this);
 
-        builder.setCore(this);
+        builder.setGameFieldSize(GAME_FIELD_WIDTH, GAME_FIELD_HEIGHT);
 
         Map player1Ships = new HashMap();
         player1Ships.put("cruiser", 1);
@@ -37,7 +38,22 @@ public class Core {
     }
 
     public void run() {
-        GameData gameData = new GameData("DATA FROM CORE!");
+        ArrayList<PlayerData> playersData = new ArrayList<PlayerData>();
+
+        for (Player player: players) {
+            PlayerData playerData = new PlayerData();
+
+            playerData.setMessage("Prepare to start game!");
+            playerData.setShips(player.getShips());
+
+            playersData.add(playerData);
+        }
+
+        Map gameFieldSize = new HashMap();
+        gameFieldSize.put("width", GAME_FIELD_WIDTH);
+        gameFieldSize.put("width", GAME_FIELD_HEIGHT);
+
+        GameData gameData = new GameData("DATA FROM CORE!", playersData);
 
         builder.build(gameData, this.players.get(0).getName(), this.players.get(1).getName());
     }
@@ -53,4 +69,22 @@ public class Core {
             System.out.print("\nCore gets action: user select cell by cords " + point.getRow() + " : " + point.getCell());
         }
     }
+
+    private Map buildPlayerShips() {
+        HashMap map = new HashMap();
+
+        map.put("test", "test");
+
+        return map;
+    }
+
+
+
+
+
+
+
+
+
+
 }
