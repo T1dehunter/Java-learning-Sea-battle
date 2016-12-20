@@ -1,20 +1,14 @@
 package gui;
 
 import javax.swing.*;
-import java.awt.event.*;
-import javax.swing.event.TableModelListener;
 
 import javax.swing.table.DefaultTableCellRenderer;
 
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 //import javax.swing.table.ListDialog;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import core.Point;
 //import javax.swing.table.Mouse
 
 
@@ -28,22 +22,25 @@ import java.util.Set;
 public class GameField extends JFrame {
     private GameScreen handler;
     private final JTable table;
+    private ArrayList<Point> cords;
 
-    public GameField() {
+    public GameField(ArrayList<Point> cells) {
         super("Game field");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        this.cords = cells;
+
         table = new JTable(10, 10);
 
-        ArrayList<Point> cords = new ArrayList<Point>();
+//        ArrayList<Point> cords = new ArrayList<core.Point>();
 
-        cords.add(new Point(0, 1));
-        cords.add(new Point(1, 1));
-        cords.add(new Point(2, 1));
-
-        cords.add(new Point(0, 5));
-        cords.add(new Point(0, 6));
-        cords.add(new Point(0, 7));
+//        cords.add(new Point(0, 1));
+//        cords.add(new Point(1, 1));
+//        cords.add(new Point(2, 1));
+//
+//        cords.add(new Point(0, 5));
+//        cords.add(new Point(0, 6));
+//        cords.add(new Point(0, 7));
 
         class CellRenderer extends DefaultTableCellRenderer {
             private ArrayList<Point> cords;
@@ -102,6 +99,6 @@ public class GameField extends JFrame {
 
     public void testEvent() {
         System.out.print("\nUser made some event");
-        handler.handleFieldCellClick(new gui.Point(9, 9));
+        handler.handleFieldCellClick(new Point(9, 9));
     }
 }

@@ -1,11 +1,12 @@
 package core;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Player {
     private String name;
     private Integer score;
-    private Map ships;
+    private ArrayList ships;
 
     public Player(String name) {
         this.name = name;
@@ -25,11 +26,11 @@ public class Player {
         return this;
     }
 
-    public void setShips(Map ships) {
+    public void setShips(ArrayList ships) {
         this.ships = ships;
     }
 
-    public Map getShips() {
+    public ArrayList getShips() {
         return this.ships;
     }
 }

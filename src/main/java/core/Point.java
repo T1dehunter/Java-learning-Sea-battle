@@ -1,10 +1,10 @@
-package gui;
+package core;
 
 public class Point {
     private int row;
     private int cell;
 
-    Point(int row, int cell) {
+    public Point(int row, int cell) {
         this.row = row;
         this.cell = cell;
     }

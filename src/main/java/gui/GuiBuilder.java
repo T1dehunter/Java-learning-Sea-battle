@@ -1,8 +1,8 @@
 package gui;
 
-import core.Core;
-import core.GameData;
-import core.PlayerData;
+import core.*;
+
+import java.util.ArrayList;
 
 public class GuiBuilder {
     public GameScreen s1;
@@ -17,9 +17,14 @@ public class GuiBuilder {
 
     }
 
-    public void build(GameData gameData, String userName1, String userName2) {
-        for (PlayerData playerData: gameData.getPlayersData()) {
-            s1 = new GameScreen("Test User");
+    public void build(GameDAO gameData, String userName1, String userName2) {
+        for (PlayerDAO playerData: gameData.getPlayersData()) {
+            ArrayList <Ship> playerShips = playerData.getShips();
+            ArrayList <Point> cells = new ArrayList<Point>();
+            for (Ship ship: playerShips) {
+                cells = ship.getCoordinates();
+            }
+            s1 = new GameScreen("Test User", cells);
             s1.addListener(this);
             s1.build(playerData.getMessage());
         }
@@ -39,7 +44,7 @@ public class GuiBuilder {
         this.getGameFieldHeight = height;
     }
 
-    public void update(GameData gameData) {
+    public void update(GameDAO gameData) {
 
     }
 }

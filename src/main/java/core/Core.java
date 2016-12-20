@@ -5,12 +5,12 @@ import gui.GuiBuilder;
 import java.util.*;
 
 import gui.PlayerAction;
-import gui.Point;
 
 public class Core {
     private GuiBuilder builder;
     private ArrayList<Player> players;
 
+    //??
     final int GAME_FIELD_WIDTH = 10;
     final int GAME_FIELD_HEIGHT = 10;
 
@@ -22,26 +22,20 @@ public class Core {
 
         builder.setGameFieldSize(GAME_FIELD_WIDTH, GAME_FIELD_HEIGHT);
 
-        Map player1Ships = new HashMap();
-        player1Ships.put("cruiser", 1);
-
-        Map player2Ships = new HashMap();
-        player2Ships.put("cruiser", 1);
-
         this.players.get(0)
                 .setScore(100)
-                .setShips(player1Ships);
+                .setShips(this.buildPlayerShips());
 
         this.players.get(1)
                 .setScore(100)
-                .setShips(player2Ships);
+                .setShips(this.buildPlayerShips());
     }
 
     public void run() {
-        ArrayList<PlayerData> playersData = new ArrayList<PlayerData>();
+        ArrayList<PlayerDAO> playersData = new ArrayList<PlayerDAO>();
 
         for (Player player: players) {
-            PlayerData playerData = new PlayerData();
+            PlayerDAO playerData = new PlayerDAO();
 
             playerData.setMessage("Prepare to start game!");
             playerData.setShips(player.getShips());
@@ -50,10 +44,12 @@ public class Core {
         }
 
         Map gameFieldSize = new HashMap();
+
+        //??
         gameFieldSize.put("width", GAME_FIELD_WIDTH);
         gameFieldSize.put("width", GAME_FIELD_HEIGHT);
 
-        GameData gameData = new GameData("DATA FROM CORE!", playersData);
+        GameDAO gameData = new GameDAO("DATA FROM CORE!", playersData);
 
         builder.build(gameData, this.players.get(0).getName(), this.players.get(1).getName());
     }
@@ -70,12 +66,19 @@ public class Core {
         }
     }
 
-    private Map buildPlayerShips() {
-        HashMap map = new HashMap();
+    private ArrayList<Ship> buildPlayerShips() {
+        // TEST
+        ArrayList <Ship> ships = new ArrayList<Ship>();
+        ArrayList <Point> coordinates = new ArrayList<Point>();
 
-        map.put("test", "test");
+        coordinates.add(new Point(9, 7));
+        coordinates.add(new Point(9, 8));
+        coordinates.add(new Point(9, 9));
 
-        return map;
+        Ship ship = new Ship(coordinates);
+        ships.add(ship);
+
+        return ships;
     }
 
 
