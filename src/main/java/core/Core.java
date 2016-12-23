@@ -47,7 +47,7 @@ public class Core {
 
         //??
         gameFieldSize.put("width", GAME_FIELD_WIDTH);
-        gameFieldSize.put("width", GAME_FIELD_HEIGHT);
+        gameFieldSize.put("height", GAME_FIELD_HEIGHT);
 
         GameDAO gameData = new GameDAO("DATA FROM CORE!", playersData);
 
@@ -79,6 +79,10 @@ public class Core {
         ships.add(ship);
 
         return ships;
+
+//        for (ShipConfig s : ShipConfig.values()) {
+//            System.out.print(s.getCount());
+//        }
     }
 
 
