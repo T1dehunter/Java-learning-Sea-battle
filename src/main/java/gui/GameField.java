@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import core.Point;
 //import javax.swing.table.Mouse
 
+import core.GameConfig;
 
 
 //https://docs.oracle.com/javase/7/docs/api/javax/swing/JTable.html
@@ -30,17 +31,7 @@ public class GameField extends JFrame {
 
         this.cords = cells;
 
-        table = new JTable(10, 10);
-
-//        ArrayList<Point> cords = new ArrayList<core.Point>();
-
-//        cords.add(new Point(0, 1));
-//        cords.add(new Point(1, 1));
-//        cords.add(new Point(2, 1));
-//
-//        cords.add(new Point(0, 5));
-//        cords.add(new Point(0, 6));
-//        cords.add(new Point(0, 7));
+        table = new JTable(GameConfig.GAME_FIELD_WIDTH, GameConfig.GAME_FIELD_HEIGHT);
 
         class CellRenderer extends DefaultTableCellRenderer {
             private ArrayList<Point> cords;

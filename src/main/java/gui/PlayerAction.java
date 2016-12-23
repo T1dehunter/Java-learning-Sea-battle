@@ -1,5 +1,7 @@
 package gui;
 
+import core.Point;
+
 public class PlayerAction {
     private String userName;
     private String action;
