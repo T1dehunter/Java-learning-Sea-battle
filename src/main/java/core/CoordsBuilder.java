@@ -1,7 +1,11 @@
 package core;
 
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.Collectors;
+
 
 public class CoordsBuilder {
     private Random randGen = new Random();
@@ -65,7 +69,7 @@ public class CoordsBuilder {
 
     private boolean isCordsCorrect(ArrayList<Point> cords) {
         for (Point point: cords) {
-            if (isPointOutsideOfField(point) || isPointInBuiltPoints(point)) {
+            if (isPointOutsideOfField(point) || isPointInBuiltPoints(point) || isPointTooCloseToOtherPoints(point)) {
                 return false;
             }
         }
@@ -77,6 +81,10 @@ public class CoordsBuilder {
         return point.getRow() < 0 || point.getRow() > (fieldWith - 1) || point.getCell() < 0 || point.getCell() > (fieldWith -1);
     }
 
+    private boolean isPointInField(Point point) {
+        return !isPointOutsideOfField(point);
+    }
+
     private boolean isPointInBuiltPoints(Point newPoint) {
         for (Point existsPoint: buildedPoints) {
             if (existsPoint.getRow() == newPoint.getRow() && existsPoint.getCell() == newPoint.getCell()) {
@@ -85,5 +93,32 @@ public class CoordsBuilder {
         }
 
         return false;
+    }
+
+    private boolean isPointTooCloseToOtherPoints(Point point) {
+        ArrayList<Point> aroundPoints = getAroundPointsFromPoint(point);
+
+        ArrayList<Point> res = aroundPoints.stream()
+                .filter(p -> isPointInField(p))
+                .filter(p -> isPointInBuiltPoints(p))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        return res.size() > 0;
+    }
+
+    private ArrayList<Point> getAroundPointsFromPoint(Point point) {
+        ArrayList<Point> aroundPoints = new ArrayList<Point>();
+
+        Point pointFromTop = new Point(point.getRow() - 1, point.getCell());
+        Point pointFromBottom = new Point(point.getRow() + 1, point.getCell());
+        Point pointFromLeft = new Point(point.getRow(), point.getCell() - 1);
+        Point pointFromRight = new Point(point.getRow(), point.getCell() + 1);
+
+        aroundPoints.add(pointFromTop);
+        aroundPoints.add(pointFromBottom);
+        aroundPoints.add(pointFromLeft);
+        aroundPoints.add(pointFromRight);
+
+        return aroundPoints;
     }
 }
