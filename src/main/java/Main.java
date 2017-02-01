@@ -1,7 +1,5 @@
 import core.Core;
 import core.Player;
-import core.ShipConfig;
-import gui.GameScreen;
 //import gui.TestGuiElements;
 //import gui.BattleField;
 import gui.GuiBuilder;
@@ -13,7 +11,12 @@ public class Main {
     public static final String test = "TEST";
 
     public static void main(String[] args) {
-        System.out.print("HELLO WORLD!!!!! -> ");
+        System.out.print("TEST!!!!! -> ");
+
+        TestClasses test = new TestClasses();
+        test.run();
+
+        System.out.print("\nHELLO WORLD!!!!! -> ");
 
         ArrayList<Player> players = new ArrayList<Player>();
         players.add(new Player("Petya"));

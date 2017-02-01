@@ -39,12 +39,16 @@ public class TestCore extends TestCase {
     }
 
     public void testOnStartGameUsersShouldHaveCorrectScore() {
+        this.core.preparePlayers();
+
         Assert.assertTrue("Player 1 has score", this.player1.getScore() > 0);
         Assert.assertTrue( "Player 2 has score", this.player2.getScore() > 0);
         Assert.assertEquals("Before start game players has equal scores", this.player1.getScore(), this.player2.getScore());
     }
 
     public void testOnStartGameUsersShouldHaveShips() {
+        this.core.preparePlayers();
+
         Assert.assertNotNull("Player 1 has ships", this.player1.getShips());
         Assert.assertNotNull( "Player 2 has ships", this.player2.getShips());
     }

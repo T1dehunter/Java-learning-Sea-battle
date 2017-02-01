@@ -1,11 +1,10 @@
 package core;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class PlayerDAO {
     private String message;
-    private ArrayList ships;
+    private ArrayList<Cell> cells;
 
     public PlayerDAO() {
 
@@ -17,14 +16,14 @@ public class PlayerDAO {
         return this;
     }
 
-    public PlayerDAO setShips(ArrayList ships) {
-        this.ships = ships;
+    public PlayerDAO setCells(ArrayList<Cell> ships) {
+        this.cells = ships;
 
         return this;
     }
 
-    public ArrayList getShips() {
-        return ships;
+    public ArrayList<Cell> getCells() {
+        return cells;
     }
 
     public String getMessage() {

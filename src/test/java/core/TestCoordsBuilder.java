@@ -148,4 +148,37 @@ public class TestCoordsBuilder extends TestCase {
         ArrayList<Point> res = coordsBuilder.buildFromPoint(new Point(0, 0), "right", 3);
         Assert.assertEquals("List of coords should be empty if points placed too close other to points from right", res.size(), 0);
     }
+
+    public void testBuildRandomCoordsForElemsShouldReturnArrayCordsWithSizeEqualElemsLength() {
+        ArrayList<Integer> elems = new ArrayList<Integer>();
+        elems.add(3);
+        elems.add(3);
+
+        ArrayList<ArrayList<Point>> randomCoords = coordsBuilder.buildRandomCoordsForElems(elems);
+
+        Assert.assertEquals("List of random coords should have size equal length of put elems", elems.size(), randomCoords.size());
+        Assert.assertEquals("Array coords for each elem has equal size", randomCoords.get(0).size(), randomCoords.get(1).size());
+    }
+
+    public void testBuildRandomCoordsForElemsShouldReturnArrayUniqCordsForEachElem() {
+        ArrayList<Integer> elems = new ArrayList<Integer>();
+        elems.add(3);
+        elems.add(3);
+
+        ArrayList<ArrayList<Point>> randomCoords = coordsBuilder.buildRandomCoordsForElems(elems);
+
+        Assert.assertEquals("List of random coords should have size equal length of put elems", elems.size(), randomCoords.size());
+        Assert.assertTrue("List coords for each elem should contain unique coords", arraysOfCoordsAreNotEqual(randomCoords.get(0), randomCoords.get(1)));
+    }
+
+    private Boolean arraysOfCoordsAreNotEqual(ArrayList<Point>arr1, ArrayList<Point>arr2) {
+        for (Point p1: arr1) {
+            for (Point p2: arr2) {
+                if (p1.getRow() == p2.getRow() && p1.getCell() == p2.getCell()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

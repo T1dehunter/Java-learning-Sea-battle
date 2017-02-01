@@ -6,7 +6,7 @@ import java.util.Map;
 public class Player {
     private String name;
     private Integer score;
-    private ArrayList ships;
+    private ArrayList<Ship> ships;
 
     public Player(String name) {
         this.name = name;
@@ -26,11 +26,11 @@ public class Player {
         return this;
     }
 
-    public void setShips(ArrayList ships) {
+    public void setShips(ArrayList<Ship> ships) {
         this.ships = ships;
     }
 
-    public ArrayList getShips() {
+    public ArrayList<Ship> getShips() {
         return this.ships;
     }
 }
