@@ -8,6 +8,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.util.ArrayList;
 
+import core.Cell;
 import core.Point;
 //import javax.swing.table.Mouse
 
@@ -23,28 +24,41 @@ import core.GameConfig;
 public class GameField extends JFrame {
     private GameScreen handler;
     private final JTable table;
-    private ArrayList<Point> cords;
+    private ArrayList<Cell> cords;
 
-    public GameField(ArrayList<Point> cells) {
+    public GameField(ArrayList<Cell> cells) {
         super("Game field");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         this.cords = cells;
 
-        table = new JTable(GameConfig.GAME_FIELD_WIDTH, GameConfig.GAME_FIELD_HEIGHT);
+//        table = new JTable(GameConfig.GAME_FIELD_WIDTH, GameConfig.GAME_FIELD_HEIGHT);
+        table = new JTable(10, 10);
 
         class CellRenderer extends DefaultTableCellRenderer {
-            private ArrayList<Point> cords;
+            private ArrayList<Cell> cords;
 
-            private CellRenderer(ArrayList<Point> cords) {
+            private CellRenderer(ArrayList<Cell> cords) {
                 this.cords = cords;
             }
 
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int cell) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, cell);
 
-                if (isCellINotEmpty(row, cell)) {
-                    c.setBackground(Color.ORANGE);
+                Cell playerCell = getCell(row, cell);
+
+//                if (isCellINotEmpty(row, cell)) {
+                if (playerCell != null) {
+                    if (playerCell.getColor().equals("orange"))
+                        c.setBackground(Color.ORANGE);
+                    if (playerCell.getColor().equals("green"))
+                        c.setBackground(Color.GREEN);
+                    if (playerCell.getColor().equals("blue"))
+                        c.setBackground(Color.BLUE);
+                    if (playerCell.getColor().equals("yellow"))
+                        c.setBackground(Color.YELLOW);
+                    if (playerCell.getColor().equals("red"))
+                        c.setBackground(Color.RED);
                 } else {
                     c.setBackground(Color.GRAY);
                 }
@@ -53,13 +67,23 @@ public class GameField extends JFrame {
             }
 
             private Boolean isCellINotEmpty(int cellRow, int cellColumn) {
-                for (Point cord : cords) {
+                for (Cell cord : cords) {
                     if (cord.getRow() == cellRow && cord.getCell() == cellColumn) {
                         return true;
                     }
                 }
 
                 return false;
+            }
+
+            private Cell getCell(int cellRow, int cellColumn) {
+                for (Cell c : cords) {
+                    if (c.getRow() == cellRow && c.getCell() == cellColumn) {
+                        return c;
+                    }
+                }
+
+                return null;
             }
         }
 

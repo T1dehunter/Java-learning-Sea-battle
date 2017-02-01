@@ -23,7 +23,7 @@ public class GameScreen {
 //    private Handler handler;
 
 
-    public GameScreen(String playerName, ArrayList<Point> cells) {
+    public GameScreen(String playerName, ArrayList<Cell> cells) {
         this.playerName = playerName;
 
         field = new GameField(cells);

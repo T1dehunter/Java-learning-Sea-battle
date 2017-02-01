@@ -19,12 +19,8 @@ public class GuiBuilder {
 
     public void build(GameDAO gameData, String userName1, String userName2) {
         for (PlayerDAO playerData: gameData.getPlayersData()) {
-            ArrayList <Ship> playerShips = playerData.getShips();
-            ArrayList <Point> cells = new ArrayList<Point>();
-            for (Ship ship: playerShips) {
-                cells = ship.getCoordinates();
-            }
-            s1 = new GameScreen("Test User", cells);
+            ArrayList <Cell> playerCells = playerData.getCells();
+            s1 = new GameScreen("Test User", playerCells);
             s1.addListener(this);
             s1.build(playerData.getMessage());
         }

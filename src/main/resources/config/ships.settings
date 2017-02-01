@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:ShipBuilder xmlns:ns2="ShipBuilder" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="ShipBuilder.xsd">
+    <ShipSetting type="test">
+        <type>battleship</type>
+        <count>1</count>
+        <length>4</length>
+        <color>green</color>
+    </ShipSetting>
+    <ShipSetting type="cruiser">
+        <type>cruiser</type>
+        <count>2</count>
+        <length>3</length>
+        <color>blue</color>
+    </ShipSetting>
+
+    <ShipSetting type="destroyer">
+        <type>destroyer</type>
+        <count>3</count>
+        <length>2</length>
+        <color>yellow</color>
+    </ShipSetting>
+
+    <ShipSetting type="boat">
+        <type>boat</type>
+        <count>3</count>
+        <length>2</length>
+        <color>red</color>
+    </ShipSetting>
+</ns2:ShipBuilder>

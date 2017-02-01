@@ -1,8 +1,8 @@
 package core;
 
 public class Point {
-    private int row;
-    private int cell;
+    protected int row;
+    protected int cell;
 
     public Point(int row, int cell) {
         this.row = row;
