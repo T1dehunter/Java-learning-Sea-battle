@@ -12,7 +12,6 @@ import core.Cell;
 import core.Point;
 //import javax.swing.table.Mouse
 
-import core.GameConfig;
 
 
 //https://docs.oracle.com/javase/7/docs/api/javax/swing/JTable.html
@@ -32,7 +31,6 @@ public class GameField extends JFrame {
 
         this.cords = cells;
 
-//        table = new JTable(GameConfig.GAME_FIELD_WIDTH, GameConfig.GAME_FIELD_HEIGHT);
         table = new JTable(10, 10);
 
         class CellRenderer extends DefaultTableCellRenderer {

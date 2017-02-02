@@ -149,26 +149,21 @@ public class TestCoordsBuilder extends TestCase {
         Assert.assertEquals("List of coords should be empty if points placed too close other to points from right", res.size(), 0);
     }
 
-    public void testBuildRandomCoordsForElemsShouldReturnArrayCordsWithSizeEqualElemsLength() {
-        ArrayList<Integer> elems = new ArrayList<Integer>();
-        elems.add(3);
-        elems.add(3);
+    public void testBuildRandomCoordsShouldReturnArrayCordsWithCorrectLength() {
+        int length = 3;
+        ArrayList<Point> randomCoords = coordsBuilder.buildRandomCoords(length);
 
-        ArrayList<ArrayList<Point>> randomCoords = coordsBuilder.buildRandomCoordsForElems(elems);
-
-        Assert.assertEquals("List of random coords should have size equal length of put elems", elems.size(), randomCoords.size());
-        Assert.assertEquals("Array coords for each elem has equal size", randomCoords.get(0).size(), randomCoords.get(1).size());
+        Assert.assertEquals("List of random coords should have size equal of length param", length, randomCoords.size());
     }
 
-    public void testBuildRandomCoordsForElemsShouldReturnArrayUniqCordsForEachElem() {
-        ArrayList<Integer> elems = new ArrayList<Integer>();
-        elems.add(3);
-        elems.add(3);
+    public void testBuildRandomCoordsShouldReturnArrayWithDifferentCordsForEachCall() {
+        int length1 = 3;
+        int length2 = 4;
 
-        ArrayList<ArrayList<Point>> randomCoords = coordsBuilder.buildRandomCoordsForElems(elems);
+        ArrayList<Point>randomCoords1 = coordsBuilder.buildRandomCoords(length1);
+        ArrayList<Point>randomCoords2 = coordsBuilder.buildRandomCoords(length2);
 
-        Assert.assertEquals("List of random coords should have size equal length of put elems", elems.size(), randomCoords.size());
-        Assert.assertTrue("List coords for each elem should contain unique coords", arraysOfCoordsAreNotEqual(randomCoords.get(0), randomCoords.get(1)));
+        Assert.assertTrue("List coords for each elem should contain unique coords", arraysOfCoordsAreNotEqual(randomCoords1, randomCoords2));
     }
 
     private Boolean arraysOfCoordsAreNotEqual(ArrayList<Point>arr1, ArrayList<Point>arr2) {
