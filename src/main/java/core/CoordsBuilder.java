@@ -1,7 +1,6 @@
 package core;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -12,34 +11,29 @@ public class CoordsBuilder {
     private ArrayList<Point> buildedPoints = new ArrayList<Point>();
     private int fieldWith;
     private int fieldHeight;
-    private int maxNumberOfAttempsForCalculateCoords = 1000;
+    private final int maxNumberOfAttempsForCalculateCoords = 1000;
 
     public CoordsBuilder(int fieldWith, int fieldHeight) {
         this.fieldWith = fieldWith;
         this.fieldHeight = fieldHeight;
     }
 
-    public ArrayList<ArrayList<Point>> buildRandomCoordsForElems(ArrayList<Integer>elems) {
-        ArrayList<ArrayList<Point>> result = new ArrayList<>();
+    public ArrayList<Point> buildRandomCoords(Integer cordsLength) {
+        ArrayList<Point> randomCoords = new ArrayList<>();
 
-        for (Integer elemLength : elems) {
-            // mb should later add custom exception
-            for (int i = 0; i < maxNumberOfAttempsForCalculateCoords; i++) {
-                Point randomPointFrom = getRandomPoint();
-                String randomDirection = getRandomDirection();
+        // mb should later add custom exception
+        for (int i = 0; i < maxNumberOfAttempsForCalculateCoords; i++) {
+            Point randomPointFrom = getRandomPoint();
+            String randomDirection = getRandomDirection();
 
-                ArrayList<Point> randomCoords = buildFromPoint(randomPointFrom, randomDirection, elemLength);
+            randomCoords = buildFromPoint(randomPointFrom, randomDirection, cordsLength);
 
-                if (randomCoords.size() == 0) {
-                    continue;
-                }
-
-                result.add(randomCoords);
+            if (randomCoords.size() > 0) {
                 break;
             }
         }
 
-        return result;
+        return randomCoords;
     }
 
     public ArrayList<Point> buildFromPoint(Point startPoint, String direction, int length) {

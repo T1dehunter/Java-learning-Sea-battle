@@ -8,17 +8,14 @@ import java.util.ArrayList;
 
 public class Ship {
     private int length;
-    private int hp;
 
     // ??
     private String color;
 
     ArrayList<Point> coordinates;
 
-
     public Ship(int length, String color) {
         this.length = length;
-        this.hp = length;
         this.color = color;
     }
 
@@ -26,12 +23,12 @@ public class Ship {
         return color;
     }
 
-    public void decreaseHp() {
-        hp = hp - 1;
+    public void decreaseLength() {
+        length = length - 1;
     }
 
-    public int getHp() {
-        return hp;
+    public int getLength() {
+        return length;
     }
 
     public ArrayList<Point> getCoordinates() {
@@ -41,14 +38,4 @@ public class Ship {
     public void setCoordinates(ArrayList<Point> coords) {
         coordinates = coords;
     }
-//    public Ship(ArrayList<Point> coordinates) {
-//        this.coordinates = coordinates;
-////        this.hp = coordinates.size();
-//    }
-
-    public String test() {
-        return "\n length: " + length + "| color: " + color;
-    }
-
-
 }

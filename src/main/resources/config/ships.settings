@@ -22,8 +22,8 @@
 
     <ShipSetting type="boat">
         <type>boat</type>
-        <count>3</count>
-        <length>2</length>
+        <count>4</count>
+        <length>1</length>
         <color>red</color>
     </ShipSetting>
 </ns2:ShipBuilder>

@@ -1,29 +1,27 @@
 package core;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class Player {
     private String name;
-    private Integer score;
     private ArrayList<Ship> ships;
 
     public Player(String name) {
         this.name = name;
     }
 
-    String getName() {
+    public String getName() {
         return this.name;
     }
 
-    Integer getScore() {
-        return this.score;
-    }
+    public Integer getScore() {
+        int score = 0;
 
-    public Player setScore(Integer score) {
-        this.score = score;
+        for (Ship s: ships) {
+            score += s.getLength();
+        }
 
-        return this;
+        return score;
     }
 
     public void setShips(ArrayList<Ship> ships) {
