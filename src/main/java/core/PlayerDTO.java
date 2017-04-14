@@ -2,21 +2,21 @@ package core;
 
 import java.util.ArrayList;
 
-public class PlayerDAO {
+public class PlayerDTO {
     private String message;
     private ArrayList<Cell> cells;
 
-    public PlayerDAO() {
+    public PlayerDTO() {
 
     }
 
-    public PlayerDAO setMessage(String message) {
+    public PlayerDTO setMessage(String message) {
         this.message = message;
 
         return this;
     }
 
-    public PlayerDAO setCells(ArrayList<Cell> ships) {
+    public PlayerDTO setCells(ArrayList<Cell> ships) {
         this.cells = ships;
 
         return this;

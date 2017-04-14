@@ -28,35 +28,36 @@ public class Core {
     }
 
     public void run() {
-        this.preparePlayers();
-
-        // ??
         builder.setHandler(this);
+
         builder.setGameFieldSize(gameFieldWidth, gameFieldHeight);
 
-        ArrayList<PlayerDAO> playersData = new ArrayList<PlayerDAO>();
+        ArrayList<PlayerDTO> playersData = new ArrayList<PlayerDTO>();
 
         for (Player player: players) {
-            PlayerDAO playerData = new PlayerDAO();
-
-            playerData.setMessage("Prepare to start game!");
-
             ArrayList<Cell> playerCells = new ArrayList<Cell>();
+            ArrayList<Ship> ships = this.buildPlayerShips();
 
-            for (Ship s : player.getShips()) {
+            player.setShips(ships);
+
+            for (Ship s : ships) {
                 for (Point p : s.getCoordinates()) {
                     playerCells.add(new Cell(p.getRow(), p.getCell(), s.getColor()));
                 }
             }
+
+            PlayerDTO playerData = new PlayerDTO();
+
+            playerData.setMessage("Prepare to start game!");
 
             playerData.setCells(playerCells);
 
             playersData.add(playerData);
         }
 
-        GameDAO gameData = new GameDAO("DATA FROM CORE!", playersData);
+        GameDTO gameData = new GameDTO("DATA FROM CORE!", playersData);
 
-        builder.build(gameData, this.players.get(0).getName(), this.players.get(1).getName());
+        builder.build(gameData);
     }
 
     private Properties getGameSettings() {
@@ -80,13 +81,6 @@ public class Core {
         }
 
         return settings;
-    }
-
-    public void preparePlayers() {
-        for (Player player: players) {
-            player.setShips(this.buildPlayerShips());
-            System.out.print(player.getShips().size());
-        }
     }
 
     public void handleAction(PlayerAction userAction) {

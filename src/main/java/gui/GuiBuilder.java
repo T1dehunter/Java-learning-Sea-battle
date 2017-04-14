@@ -17,8 +17,8 @@ public class GuiBuilder {
 
     }
 
-    public void build(GameDAO gameData, String userName1, String userName2) {
-        for (PlayerDAO playerData: gameData.getPlayersData()) {
+    public void build(GameDTO gameData) {
+        for (PlayerDTO playerData: gameData.getPlayersData()) {
             ArrayList <Cell> playerCells = playerData.getCells();
             s1 = new GameScreen("Test User", playerCells);
             s1.addListener(this);
@@ -40,7 +40,7 @@ public class GuiBuilder {
         this.getGameFieldHeight = height;
     }
 
-    public void update(GameDAO gameData) {
+    public void update(GameDTO gameData) {
 
     }
 }
