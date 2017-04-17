@@ -3,24 +3,26 @@ package gui;
 import core.Point;
 
 public class PlayerAction {
-    private String userName;
+    private String playerName;
     private String action;
     private Point point;
 
-    PlayerAction(String userName) {
-        this.userName = userName;
+    public PlayerAction(String userName) {
+        this.playerName = userName;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getPlayerName() {
+        return playerName;
     }
 
     public String getAction() {
         return action;
     }
 
-    public void setAction(String action) {
+    public PlayerAction setAction(String action) {
         this.action = action;
+
+        return this;
     }
 
     public Point getPoint() {

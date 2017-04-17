@@ -3,11 +3,13 @@ package core;
 import java.util.ArrayList;
 
 public class PlayerDTO {
+    private String name;
     private String message;
-    private ArrayList<Cell> cells;
+    private ArrayList<Cell> ownCells;
+    private ArrayList<Cell> enemyCells;
 
-    public PlayerDTO() {
-
+    public PlayerDTO(String name) {
+        this.name = name;
     }
 
     public PlayerDTO setMessage(String message) {
@@ -16,14 +18,24 @@ public class PlayerDTO {
         return this;
     }
 
-    public PlayerDTO setCells(ArrayList<Cell> ships) {
-        this.cells = ships;
+    public PlayerDTO setOwnCells(ArrayList<Cell> cells) {
+        this.ownCells = cells;
 
         return this;
     }
 
-    public ArrayList<Cell> getCells() {
-        return cells;
+    public PlayerDTO setEnemyCells(ArrayList<Cell> cells) {
+        this.enemyCells = cells;
+
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ArrayList<Cell> getOwnCells() {
+        return ownCells;
     }
 
     public String getMessage() {

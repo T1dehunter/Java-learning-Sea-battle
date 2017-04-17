@@ -3,44 +3,49 @@ package gui;
 import core.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class GuiBuilder {
-    public GameScreen s1;
-    public GameScreen s2;
-    private Core handler;
+public class GuiBuilder implements PlayerActionHandler {
+    private Core core;
 
-    // ??
-    private Integer gameFieldWidth;
-    private Integer getGameFieldHeight;
+    private int playerGameFieldWidth;
+    private int playerGameFieldHeight;
 
-    public GuiBuilder() {
+    private Map<String, GameScreen> playersScreens = new HashMap<>();
 
+    public GuiBuilder(int gameFieldWidth, int gameFieldHeight) {
+        this.playerGameFieldWidth = gameFieldWidth;
+        this.playerGameFieldHeight = gameFieldHeight;
     }
 
     public void build(GameDTO gameData) {
         for (PlayerDTO playerData: gameData.getPlayersData()) {
-            ArrayList <Cell> playerCells = playerData.getCells();
-            s1 = new GameScreen("Test User", playerCells);
-            s1.addListener(this);
-            s1.build(playerData.getMessage());
+            GameScreen screen;
+
+            PlayerAction action = new PlayerAction(playerData.getName());
+
+            screen = new GameScreen(playerGameFieldWidth, playerGameFieldHeight, playerData,this, action);
+            screen.build(playerData.getMessage());
+
+            playersScreens.put(playerData.getName(), screen);
         }
     }
 
-    public void handlePlayerAction(PlayerAction action) {
-        handler.handleAction(action);
+    public void handle(PlayerAction action) {
+        core.handlePlayerAction(action);
     }
 
-    public void setHandler(Core core) {
-        this.handler = core;
-    }
-
-    //??
-    public void setGameFieldSize(Integer width, Integer height) {
-        this.gameFieldWidth = width;
-        this.getGameFieldHeight = height;
+    public void setCore(Core core) {
+        this.core = core;
     }
 
     public void update(GameDTO gameData) {
+        System.out.print("game dto");
+        for (PlayerDTO playerData: gameData.getPlayersData()) {
+            GameScreen screen = playersScreens.get(playerData.getName());
 
+            screen.update(playerData);
+        }
     }
 }

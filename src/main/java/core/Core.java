@@ -3,7 +3,6 @@ package core;
 import gui.GuiBuilder;
 import gui.PlayerAction;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import javax.xml.bind.JAXBContext;
@@ -13,25 +12,22 @@ import javax.xml.bind.Unmarshaller;
 public class Core {
     private GuiBuilder builder;
     private ArrayList<Player> players;
+    private Player currentPlayer;
+    private int playerFieldWith;
+    private int playerFieldHeight;
 
-    private int gameFieldWidth;
-    private int gameFieldHeight;
-
-    public Core(GuiBuilder builder, ArrayList<Player> players) {
+    public Core(GuiBuilder builder, ArrayList<Player> players, int playerFieldWith, int playerFieldHeight) {
         this.builder = builder;
         this.players = players;
 
-        Properties settings = this.getGameSettings();
+        // for test
+        this.currentPlayer = players.get(0);
 
-        this.gameFieldWidth = Integer.parseInt(settings.getProperty("width"));
-        this.gameFieldHeight = Integer.parseInt(settings.getProperty("height"));
+        this.playerFieldWith = playerFieldWith;
+        this.playerFieldHeight = playerFieldHeight;
     }
 
     public void run() {
-        builder.setHandler(this);
-
-        builder.setGameFieldSize(gameFieldWidth, gameFieldHeight);
-
         ArrayList<PlayerDTO> playersData = new ArrayList<PlayerDTO>();
 
         for (Player player: players) {
@@ -46,11 +42,11 @@ public class Core {
                 }
             }
 
-            PlayerDTO playerData = new PlayerDTO();
+            PlayerDTO playerData = new PlayerDTO(player.getName());
 
             playerData.setMessage("Prepare to start game!");
 
-            playerData.setCells(playerCells);
+            playerData.setOwnCells(playerCells);
 
             playersData.add(playerData);
         }
@@ -60,43 +56,43 @@ public class Core {
         builder.build(gameData);
     }
 
-    private Properties getGameSettings() {
-        Properties settings = new Properties();
-        InputStream input = null;
+    public void handlePlayerAction(PlayerAction userAction) {
+        System.out.print("\nCore gets action from " + userAction.getPlayerName());
 
-        try {
-            input = getClass().getClassLoader().getResourceAsStream("config/config.properties");
+        ArrayList<PlayerDTO> playersData = new ArrayList<>();
 
-            settings.load(input);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        String message = "Test message";
 
-        return settings;
-    }
+        // temp code for test checking arg of mock in unit tests!!!!!!
 
-    public void handleAction(PlayerAction userAction) {
-        System.out.print("\nCore gets action from " + userAction.getUserName());
-        System.out.print("\nCore gets action " + userAction.getAction());
-
-
-        if (userAction.getAction().equals("select point")) {
+        if (userAction.getAction().equals("cell selected")) {
             Point point = userAction.getPoint();
 
+            if (currentPlayer.getName().equals(userAction.getPlayerName())) {
+                message = "You can not make a move";
+            }
+
             System.out.print("\nCore gets action: user select cell by cords " + point.getRow() + " : " + point.getCell());
+
+            PlayerDTO player = new PlayerDTO(userAction.getPlayerName());
+
+            player.setMessage(message);
+
+            Point cordinatesPlayerMove = userAction.getPoint();
+            ArrayList<Cell> playerCells = new ArrayList<>();
+            playerCells.add(new Cell(cordinatesPlayerMove.getRow(), cordinatesPlayerMove.getCell(), "red"));
+            player.setOwnCells(playerCells);
+            playersData.add(player);
+
+            GameDTO gameData = new GameDTO("DATA FROM CORE!", playersData);
+            builder.update(gameData);
         }
     }
 
+
+    // ??
     private ArrayList<Ship> buildPlayerShips() {
-        CoordsBuilder coordsBuilder = new CoordsBuilder(gameFieldWidth, gameFieldHeight);
+        CoordsBuilder coordsBuilder = new CoordsBuilder(playerFieldWith, playerFieldHeight);
         ShipBuilder shipBuilder = getShipBuilder();
         ArrayList<Ship> ships = shipBuilder.buildListShips();
 
@@ -108,6 +104,7 @@ public class Core {
         return ships;
     }
 
+    // ??
     private ShipBuilder getShipBuilder() {
         ShipBuilder builder;
         try {

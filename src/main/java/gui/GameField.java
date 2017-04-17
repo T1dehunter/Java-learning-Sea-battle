@@ -1,37 +1,67 @@
 package gui;
 
 import javax.swing.*;
-
 import javax.swing.table.DefaultTableCellRenderer;
-
-//import javax.swing.table.ListDialog;
 import java.awt.*;
 import java.util.ArrayList;
 
 import core.Cell;
 import core.Point;
-//import javax.swing.table.Mouse
 
 
-
-//https://docs.oracle.com/javase/7/docs/api/javax/swing/JTable.html
-//https://docs.oracle.com/javase/7/docs/api/javax/swing/table/TableModel.html
-
-//http://skipy-ru.livejournal.com/1577.html
-
-
-public class GameField extends JFrame {
-    private GameScreen handler;
-    private final JTable table;
+class GameField extends JFrame {
+    private PlayerActionHandler handler;
+    private PlayerAction action;
     private ArrayList<Cell> cords;
 
-    public GameField(ArrayList<Cell> cells) {
+    private final JTable table;
+
+    GameField(int width, int height, PlayerActionHandler handler, PlayerAction action) {
         super("Game field");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        this.cords = new ArrayList<>();
+        this.handler = handler;
+        this.action = action;
+
+        table = new JTable(width, height);
+
+        init();
+
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                int col = table.columnAtPoint(e.getPoint());
+
+                GameField.this.action
+                        .setAction("cell selected")
+                        .setPoint(new Point(row, col));
+
+                GameField.this.handler.handle(GameField.this.action);
+            }
+        });
+    }
+
+    GameField(int width, int height, ArrayList<Cell> cells) {
+        super("Game field");
 
         this.cords = cells;
 
-        table = new JTable(10, 10);
+        table = new JTable(width, height);
+
+        init();
+    }
+
+    void display(String s) {
+        System.out.print("Field displays -> " + s);
+    }
+
+    JTable getElement() {
+        return table;
+    }
+
+    private void init() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         class CellRenderer extends DefaultTableCellRenderer {
             private ArrayList<Cell> cords;
@@ -45,7 +75,6 @@ public class GameField extends JFrame {
 
                 Cell playerCell = getCell(row, cell);
 
-//                if (isCellINotEmpty(row, cell)) {
                 if (playerCell != null) {
                     if (playerCell.getColor().equals("orange"))
                         c.setBackground(Color.ORANGE);
@@ -64,16 +93,6 @@ public class GameField extends JFrame {
                 return c;
             }
 
-            private Boolean isCellINotEmpty(int cellRow, int cellColumn) {
-                for (Cell cord : cords) {
-                    if (cord.getRow() == cellRow && cord.getCell() == cellColumn) {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
             private Cell getCell(int cellRow, int cellColumn) {
                 for (Cell c : cords) {
                     if (c.getRow() == cellRow && c.getCell() == cellColumn) {
@@ -86,32 +105,5 @@ public class GameField extends JFrame {
         }
 
         table.setDefaultRenderer(Object.class, new CellRenderer(cords));
-
-        table.addMouseListener(new java.awt.event.MouseAdapter() {
-
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                int row = table.rowAtPoint(e.getPoint());
-                int col = table.columnAtPoint(e.getPoint());
-
-                System.out.print("ROW -> " + row + " *** " + "CELL -> " + col);
-            }
-        });
-    }
-
-    public void display(String s) {
-        System.out.print("Field displays -> " + s);
-    }
-
-    public JTable getElement() {
-        return table;
-    }
-
-    void addListener(GameScreen handler) {
-        this.handler = handler;
-    }
-
-    public void testEvent() {
-        System.out.print("\nUser made some event");
-        handler.handleFieldCellClick(new Point(9, 9));
     }
 }

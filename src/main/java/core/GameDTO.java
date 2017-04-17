@@ -14,4 +14,8 @@ public class GameDTO {
     public ArrayList<PlayerDTO> getPlayersData() {
         return playersData;
     }
+
+    public String superTest() {
+        return "ggg";
+    }
 }

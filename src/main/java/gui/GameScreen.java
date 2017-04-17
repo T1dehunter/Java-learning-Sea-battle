@@ -1,8 +1,6 @@
 package gui;
 
 import core.*;
-import core.Point;
-
 import javax.swing.*;
 
 import java.awt.*;
@@ -11,59 +9,46 @@ import java.util.ArrayList;
 
 
 public class GameScreen {
-    private String playerName;
-    private GuiBuilder handler;
-    private GameField field;
+    private GameField playerField;
+    private GameField opponentField;
 
-    private JFrame mainFrame;
     private JLabel statusLabel;
-    private JPanel controlPanel;
-    private JTable table;
-//    private BattleField battleField;
 
-
-    public GameScreen(String playerName, ArrayList<Cell> cells) {
-        this.playerName = playerName;
-
-        field = new GameField(cells);
-        field.addListener(this);
-    }
-
-    void addListener(GuiBuilder handler) {
-        this.handler = handler;
+    public GameScreen(int gameFieldWidth, int gameFieldHeight, PlayerDTO playerData, PlayerActionHandler handler, PlayerAction action) {
+        this.playerField = new GameField(gameFieldWidth, gameFieldHeight, playerData.getOwnCells());
+        this.opponentField = new GameField(gameFieldWidth, gameFieldHeight, handler, action);
     }
 
     public void build(String data) {
-        field.display(data);
-        field.testEvent();
+        JFrame mainFrame;
+        JPanel controlPanel;
 
+        playerField.display(data);
+        opponentField.display(data);
 
         mainFrame = new JFrame("Java Swing Examples");
-        mainFrame.setSize(600,600);
-        mainFrame.setLayout(new GridLayout(3, 1));
+        mainFrame.setSize(400,400);
+        mainFrame.setLayout(new GridLayout(5, 1));
         mainFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent){
                 System.exit(0);
             }
         });
-        statusLabel = new JLabel("",JLabel.CENTER);
+
+        statusLabel = new JLabel("some text",JLabel.CENTER);
         controlPanel = new JPanel();
 
-        table = field.getElement();
-
-        mainFrame.add(table);
-
+        mainFrame.add(playerField.getElement());
+        mainFrame.add(new JLabel("",JLabel.CENTER));
+        mainFrame.add(opponentField.getElement());
         mainFrame.add(statusLabel);
-//        mainFrame.add(new JScrollPane(table));
-//        mainFrame.add(table);
-
         mainFrame.add(controlPanel);
 
-        JButton javaButton = new JButton("Submit");
+        JButton submitButton = new JButton("Submit");
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setHorizontalTextPosition(SwingConstants.LEFT);
 
-        javaButton.addActionListener(new ActionListener() {
+        submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 statusLabel.setText("Submit Button clicked.");
             }
@@ -75,26 +60,18 @@ public class GameScreen {
             }
         });
 
-        controlPanel.add(javaButton);
+        controlPanel.add(submitButton);
         controlPanel.add(cancelButton);
-
-
-//        setPreferredSize(new Dimension(400, 400));
-//        setLocationRelativeTo(null);
-//        getContentPane().add(new JScrollPane(table));
-
         mainFrame.setVisible(true);
         mainFrame.pack();
-
-
-
-
     }
 
-    public void handleFieldCellClick(core.Point point) {
-        PlayerAction action = new PlayerAction(playerName);
-        action.setPoint(point);
-        action.setAction("select point");
-        handler.handlePlayerAction(action);
+    public void update(PlayerDTO playerData) {
+        /*
+        *  get player cells, update field with player cells
+        *  get enemy cells, update field with enemy cells
+        *
+        *
+        * */
     }
 }
