@@ -11,8 +11,11 @@ import javax.xml.bind.Unmarshaller;
 
 public class Core {
     private GuiBuilder builder;
+
     private ArrayList<Player> players;
     private Player currentPlayer;
+    private Player previousPlayerWhoMadeMove;
+
     private int playerFieldWith;
     private int playerFieldHeight;
 
@@ -67,6 +70,20 @@ public class Core {
 
         if (userAction.getAction().equals("cell selected")) {
             Point point = userAction.getPoint();
+
+            if (isCorrectOrderOfMoveForPlayer(userAction.getPlayerName())) {
+                PlayerDTO playerDto = new PlayerDTO(userAction.getPlayerName());
+                playerDto.setMessage("Now is not your turn of move");
+                playersData.add(playerDto);
+                GameDTO gameData = new GameDTO("test", playersData);
+                builder.update(gameData);
+
+                return;
+
+
+            }
+
+            // validate user action
 
             if (currentPlayer.getName().equals(userAction.getPlayerName())) {
                 message = "You can not make a move";
@@ -123,5 +140,34 @@ public class Core {
         }
 
         return builder;
+    }
+
+    private boolean isCorrectOrderOfMoveForPlayer(String playerName) {
+        Player currentPlayer = getPlayerByName(playerName);
+
+        if (isPreviousAndCurrentPlayersAreDifferent(currentPlayer) || isCurrentPlayerHasHitOnPreviousMove(currentPlayer)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private Player getPlayerByName(String name) {
+        for (Player player : players) {
+            if (player.getName().equals(name)) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    private boolean isPreviousAndCurrentPlayersAreDifferent(Player currentPlayer) {
+        return previousPlayerWhoMadeMove == null || !currentPlayer.getName().equals(previousPlayerWhoMadeMove.getName());
+    }
+
+    private boolean isCurrentPlayerHasHitOnPreviousMove(Player currentPlayer) {
+        return currentPlayer.getName().equals(previousPlayerWhoMadeMove.getName()) &&
+                previousPlayerWhoMadeMove.getLastMove().getStatus().equals("hit");
     }
 }

@@ -47,7 +47,31 @@ public class TestCore extends TestCase {
         this.core = new Core(this.builder, players, playerGameFieldWidth, playerGameFieldHeight);
     }
 
-    public void testHandlePlayerAction() {
+//    public void testHandlePlayerAction() {
+//        GuiBuilder builder = mock(GuiBuilder.class);
+//        ArrayList<Player> players = new ArrayList<>();
+//        players.add(this.player1);
+//        players.add(this.player2);
+//
+//        Core core = new Core(builder, players, 10, 10);
+//
+//        PlayerAction action = new PlayerAction("Player1");
+//        action.setAction("cell selected").setPoint(new Point(0, 0));
+//
+//        core.handlePlayerAction(action);
+//
+//        ArgumentCaptor<GameDTO> argument = ArgumentCaptor.forClass(GameDTO.class);
+//        verify(builder).update(argument.capture());
+//
+//        GameDTO gameDTOArg = argument.getValue();
+//        PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
+////        PlayerDTO player2 = gameDTOArg.getPlayersData().get(1);
+//        assertEquals(0, player1.getOwnCells().get(0).getRow());
+//        assertEquals(0, player1.getOwnCells().get(0).getCell());
+//        assertEquals("red", player1.getOwnCells().get(0).getColor());
+//    }
+
+    public void testHandlePlayerActionWhenSamePlayerMakesTwoMoves() {
         GuiBuilder builder = mock(GuiBuilder.class);
         ArrayList<Player> players = new ArrayList<>();
         players.add(this.player1);
@@ -55,20 +79,22 @@ public class TestCore extends TestCase {
 
         Core core = new Core(builder, players, 10, 10);
 
-        PlayerAction action = new PlayerAction("Player1");
-        action.setAction("cell selected").setPoint(new Point(0, 0));
+        PlayerAction action1 = new PlayerAction("Player1");
+        action1.setAction("cell selected").setPoint(new Point(9, 0));
 
-        core.handlePlayerAction(action);
+        PlayerAction action2 = new PlayerAction("Player1");
+        action2.setAction("cell selected").setPoint(new Point(9, 1));
+
+        core.handlePlayerAction(action1);
+        core.handlePlayerAction(action2);
 
         ArgumentCaptor<GameDTO> argument = ArgumentCaptor.forClass(GameDTO.class);
-        verify(builder).update(argument.capture());
+        verify(builder, times(2)).update(argument.capture());
 
         GameDTO gameDTOArg = argument.getValue();
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
-//        PlayerDTO player2 = gameDTOArg.getPlayersData().get(1);
-        assertEquals(0, player1.getOwnCells().get(0).getRow());
-        assertEquals(0, player1.getOwnCells().get(0).getCell());
-        assertEquals("red", player1.getOwnCells().get(0).getColor());
+
+        assertEquals("Now is not your turn of move", player1.getMessage());
     }
 
 //    public void testOnStartGameUsersShouldHaveCorrectScore() {

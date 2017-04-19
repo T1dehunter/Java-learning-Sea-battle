@@ -31,4 +31,24 @@ public class Player {
     public ArrayList<Ship> getShips() {
         return this.ships;
     }
+
+    // temp code for test some idea
+    public class Move extends Point {
+        private String status;
+
+        public Move(int row, int cell, String status) {
+            super(row, cell);
+
+            this.status = status;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+    }
+
+    public Move getLastMove() {
+        return new Move(0, 0, "miss");
+    }
+    // temp code for test some idea
 }
