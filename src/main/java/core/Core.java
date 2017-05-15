@@ -60,20 +60,13 @@ public class Core {
     }
 
     public void handlePlayerAction(PlayerAction userAction) {
-        System.out.print("\nCore gets action from " + userAction.getPlayerName());
-
+        Player currentPlayer = getPlayerByName(userAction.getPlayerName());
         ArrayList<PlayerDTO> playersData = new ArrayList<>();
 
-        String message = "Test message";
-
-        // temp code for test checking arg of mock in unit tests!!!!!!
-
         if (userAction.getAction().equals("cell selected")) {
-            Point point = userAction.getPoint();
-
-            if (isCorrectOrderOfMoveForPlayer(userAction.getPlayerName())) {
+            if (!isCorrectOrderOfMoveForPlayer(userAction.getPlayerName())) {
                 PlayerDTO playerDto = new PlayerDTO(userAction.getPlayerName());
-                playerDto.setMessage("Now is not your turn of move");
+                playerDto.setMessage(GameMessages.PLAYER_MOVE_ERROR.getText());
                 playersData.add(playerDto);
                 GameDTO gameData = new GameDTO("test", playersData);
                 builder.update(gameData);
@@ -83,26 +76,34 @@ public class Core {
 
             }
 
-            // validate user action
+            previousPlayerWhoMadeMove = currentPlayer;
 
-            if (currentPlayer.getName().equals(userAction.getPlayerName())) {
-                message = "You can not make a move";
+            // temp comment! case when need implement checking hit in player move
+            Point selectedPointOfCurrentPlayer = userAction.getPoint();
+
+            Player opponent = getPlayerOpponent(userAction.getPlayerName());
+
+            if (opponent.isHit(selectedPointOfCurrentPlayer)) {
+                PlayerDTO playerDto = new PlayerDTO(userAction.getPlayerName());
+
+                playerDto.setMessage("you have success hit!!!");
+
+                playersData.add(playerDto);
+
+                GameDTO gameData = new GameDTO("DATA FROM CORE!", playersData);
+
+                builder.update(gameData);
             }
 
-            System.out.print("\nCore gets action: user select cell by cords " + point.getRow() + " : " + point.getCell());
 
-            PlayerDTO player = new PlayerDTO(userAction.getPlayerName());
 
-            player.setMessage(message);
-
-            Point cordinatesPlayerMove = userAction.getPoint();
-            ArrayList<Cell> playerCells = new ArrayList<>();
-            playerCells.add(new Cell(cordinatesPlayerMove.getRow(), cordinatesPlayerMove.getCell(), "red"));
-            player.setOwnCells(playerCells);
-            playersData.add(player);
-
-            GameDTO gameData = new GameDTO("DATA FROM CORE!", playersData);
-            builder.update(gameData);
+//            Point cordinatesPlayerMove = userAction.getPoint();
+//            ArrayList<Cell> playerCells = new ArrayList<>();
+//            playerCells.add(new Cell(cordinatesPlayerMove.getRow(), cordinatesPlayerMove.getCell(), "red"));
+//            player.setOwnCells(playerCells);
+//            playersData.add(player);
+//            GameDTO gameData = new GameDTO("DATA FROM CORE!", playersData);
+//            builder.update(gameData);
         }
     }
 
@@ -145,16 +146,22 @@ public class Core {
     private boolean isCorrectOrderOfMoveForPlayer(String playerName) {
         Player currentPlayer = getPlayerByName(playerName);
 
-        if (isPreviousAndCurrentPlayersAreDifferent(currentPlayer) || isCurrentPlayerHasHitOnPreviousMove(currentPlayer)) {
-            return true;
-        }
-
-        return false;
+        return isPreviousAndCurrentPlayersAreDifferent(currentPlayer) || isCurrentPlayerHasHitOnPreviousMove(currentPlayer);
     }
 
     private Player getPlayerByName(String name) {
         for (Player player : players) {
             if (player.getName().equals(name)) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    private Player getPlayerOpponent(String playerName) {
+        for (Player player : players) {
+            if (!player.getName().equals(playerName)) {
                 return player;
             }
         }

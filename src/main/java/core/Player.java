@@ -28,6 +28,19 @@ public class Player {
         this.ships = ships;
     }
 
+    public boolean isHit(Point cordsOfPlayerMove) {
+        for (Ship s: ships) {
+            ArrayList<Point> shipCords = s.getCoordinates();
+            for (Point p : shipCords) {
+                if (p.getRow() == cordsOfPlayerMove.getRow() && p.getCell() == cordsOfPlayerMove.getCell()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public ArrayList<Ship> getShips() {
         return this.ships;
     }

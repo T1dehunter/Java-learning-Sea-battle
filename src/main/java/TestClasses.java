@@ -36,7 +36,9 @@ public class TestClasses {
     }
 
     public void run() {
-        testGetProperty();
+
+
+
     }
 
     public void testGetProperty() {
