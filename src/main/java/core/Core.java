@@ -61,49 +61,50 @@ public class Core {
 
     public void handlePlayerAction(PlayerAction userAction) {
         Player currentPlayer = getPlayerByName(userAction.getPlayerName());
+        Player opponentPlayer = getPlayerOpponent(userAction.getPlayerName());
+
+        if (currentPlayer == null || opponentPlayer == null) {
+            return;
+        }
+
+        PlayerDTO currentPlayerDTO = new PlayerDTO(userAction.getPlayerName());
+        PlayerDTO opponentPlayerDTO = new PlayerDTO(opponentPlayer.getName());
+
         ArrayList<PlayerDTO> playersData = new ArrayList<>();
+
+        playersData.add(currentPlayerDTO);
+        playersData.add(opponentPlayerDTO);
+
+        GameDTO gameData = new GameDTO("test", playersData);
 
         if (userAction.getAction().equals("cell selected")) {
             if (!isCorrectOrderOfMoveForPlayer(userAction.getPlayerName())) {
-                PlayerDTO playerDto = new PlayerDTO(userAction.getPlayerName());
-                playerDto.setMessage(GameMessages.PLAYER_MOVE_ERROR.getText());
-                playersData.add(playerDto);
-                GameDTO gameData = new GameDTO("test", playersData);
+                currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_ERROR);
                 builder.update(gameData);
 
                 return;
-
-
             }
 
             previousPlayerWhoMadeMove = currentPlayer;
 
-            // temp comment! case when need implement checking hit in player move
             Point selectedPointOfCurrentPlayer = userAction.getPoint();
 
-            Player opponent = getPlayerOpponent(userAction.getPlayerName());
-
-            if (opponent.isHit(selectedPointOfCurrentPlayer)) {
-                PlayerDTO playerDto = new PlayerDTO(userAction.getPlayerName());
-
-                playerDto.setMessage("you have success hit!!!");
-
-                playersData.add(playerDto);
-
-                GameDTO gameData = new GameDTO("DATA FROM CORE!", playersData);
-
+            if (currentPlayer.isMoveWasMade(selectedPointOfCurrentPlayer)) {
+                currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_ERROR_SAME_FIELD);
                 builder.update(gameData);
+
+                return;
             }
 
+            if (opponentPlayer.isHit(selectedPointOfCurrentPlayer)) {
+                currentPlayer.addMove(selectedPointOfCurrentPlayer, "hit");
+                currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_SUCCESS_HIT);
+            } else {
+                currentPlayer.addMove(selectedPointOfCurrentPlayer, "miss");
+                currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_MISS_HIT);
+            }
 
-
-//            Point cordinatesPlayerMove = userAction.getPoint();
-//            ArrayList<Cell> playerCells = new ArrayList<>();
-//            playerCells.add(new Cell(cordinatesPlayerMove.getRow(), cordinatesPlayerMove.getCell(), "red"));
-//            player.setOwnCells(playerCells);
-//            playersData.add(player);
-//            GameDTO gameData = new GameDTO("DATA FROM CORE!", playersData);
-//            builder.update(gameData);
+            builder.update(gameData);
         }
     }
 
@@ -175,6 +176,6 @@ public class Core {
 
     private boolean isCurrentPlayerHasHitOnPreviousMove(Player currentPlayer) {
         return currentPlayer.getName().equals(previousPlayerWhoMadeMove.getName()) &&
-                previousPlayerWhoMadeMove.getLastMove().getStatus().equals("hit");
+                currentPlayer.getLastMove().getStatus().equals("hit");
     }
 }

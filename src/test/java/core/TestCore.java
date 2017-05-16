@@ -24,6 +24,12 @@ public class TestCore extends TestCase {
     private Player player1;
     private Player player2;
 
+    private ArrayList<Ship> shipsOfPlayer1;
+    private ArrayList<Ship> shipsOfPlayer2;
+
+    private ArrayList<Player> players = new ArrayList<>();
+
+
     private int playerGameFieldWidth = 10;
     private int playerGameFieldHeight = 10;
 
@@ -37,15 +43,18 @@ public class TestCore extends TestCase {
     @Override
     protected void setUp() throws Exception {
         this.player1 = new Player("Player1");
-        this.player2 = new Player("Player2");
+        this.shipsOfPlayer1 = new ArrayList<>();
+        this.player1.setShips(this.shipsOfPlayer1);
 
-        ArrayList<Player> players = new ArrayList<Player>();
+        this.player2 = new Player("Player2");
+        this.shipsOfPlayer2 = new ArrayList<>();
+        this.player2.setShips(this.shipsOfPlayer2);
+
         players.add(this.player1);
         players.add(this.player2);
 
-
         this.builder = new GuiBuilder(playerGameFieldWidth, playerGameFieldHeight);
-        this.core = new Core(this.builder, players, playerGameFieldWidth, playerGameFieldHeight);
+//        this.core = new Core(this.builder, players, playerGameFieldWidth, playerGameFieldHeight);
     }
 
 //    public void testHandlePlayerAction() {
@@ -72,7 +81,7 @@ public class TestCore extends TestCase {
 //        assertEquals("red", player1.getOwnCells().get(0).getColor());
 //    }
 
-    public void testHandlePlayerActionWhenSamePlayerMakesSecondMoveOutsideOfQue() {
+    public void testHandlePlayerActionWhenPlayerHasSuccessHit() {
         GuiBuilder builder = mock(GuiBuilder.class);
         ArrayList<Player> players = new ArrayList<>();
         players.add(this.player1);
@@ -87,28 +96,55 @@ public class TestCore extends TestCase {
         ship.setCoordinates(cords);
         ships.add(ship);
 
-        this.player1.setShips(ships);
         this.player2.setShips(ships);
 
         Core core = new Core(builder, players, 10, 10);
 
         PlayerAction action1 = new PlayerAction("Player1");
-        action1.setAction("cell selected").setPoint(new Point(9, 0));
-
-        PlayerAction action2 = new PlayerAction("Player1");
-        action2.setAction("cell selected").setPoint(new Point(9, 1));
+        action1.setAction("cell selected").setPoint(new Point(0, 0));
 
         core.handlePlayerAction(action1);
-        core.handlePlayerAction(action2);
 
         ArgumentCaptor<GameDTO> argument = ArgumentCaptor.forClass(GameDTO.class);
-        // times(1 or 2) should fix main code temp!!!
         verify(builder, times(1)).update(argument.capture());
 
         GameDTO gameDTOArg = argument.getValue();
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
 
-        assertEquals(GameMessages.PLAYER_MOVE_ERROR.getText(), player1.getMessage());
+        assertEquals(GameMessages.PLAYER_MOVE_SUCCESS_HIT.toString(), player1.getMessage());
+    }
+
+    public void testHandlePlayerActionWhenPlayerHasMissHit() {
+        GuiBuilder builder = mock(GuiBuilder.class);
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(this.player1);
+        players.add(this.player2);
+
+        ArrayList<Ship> ships = new ArrayList<>();
+        ArrayList<Point> cords = new ArrayList<>();
+        cords.add(new Point(0, 0));
+        cords.add(new Point(0, 1));
+        cords.add(new Point(0, 2));
+        Ship ship = new Ship(3, "test");
+        ship.setCoordinates(cords);
+        ships.add(ship);
+
+        this.player2.setShips(ships);
+
+        Core core = new Core(builder, players, 10, 10);
+
+        PlayerAction action1 = new PlayerAction("Player1");
+        action1.setAction("cell selected").setPoint(new Point(1, 0));
+
+        core.handlePlayerAction(action1);
+
+        ArgumentCaptor<GameDTO> argument = ArgumentCaptor.forClass(GameDTO.class);
+        verify(builder, times(1)).update(argument.capture());
+
+        GameDTO gameDTOArg = argument.getValue();
+        PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
+
+        assertEquals(GameMessages.PLAYER_MOVE_MISS_HIT.toString(), player1.getMessage());
     }
 
     public void testHandlePlayerActionWhenSamePlayerMakesSecondMoveAfterSuccessHit() {
@@ -117,7 +153,7 @@ public class TestCore extends TestCase {
         players.add(this.player1);
         players.add(this.player2);
 
-        Core core = new Core(builder, players, 10, 10);
+
 
         ArrayList<Ship> ships = new ArrayList<>();
         ArrayList<Point> cords = new ArrayList<>();
@@ -129,6 +165,8 @@ public class TestCore extends TestCase {
         ships.add(ship);
 
         this.player2.setShips(ships);
+
+        Core core = new Core(builder, players, 10, 10);
 
         PlayerAction action1 = new PlayerAction("Player1");
         action1.setAction("cell selected").setPoint(new Point(0, 0));
@@ -145,7 +183,87 @@ public class TestCore extends TestCase {
         GameDTO gameDTOArg = argument.getValue();
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
 
-        assertEquals("you have success hit!!!", player1.getMessage());
+        assertEquals(GameMessages.PLAYER_MOVE_SUCCESS_HIT.toString(), player1.getMessage());
+    }
+
+    public void testHandlePlayerActionWhenSamePlayerMakesSecondMoveOutsideOfQue() {
+        GuiBuilder builder = mock(GuiBuilder.class);
+
+        ArrayList<Point> player1ShipCords = new ArrayList<>();
+        player1ShipCords.add(new Point(0, 0));
+        player1ShipCords.add(new Point(0, 1));
+        player1ShipCords.add(new Point(0, 2));
+        Ship player1Ship = new Ship(3, "test");
+        player1Ship.setCoordinates(player1ShipCords);
+        shipsOfPlayer1.add(player1Ship);
+
+        ArrayList<Point> player2ShipCords = new ArrayList<>();
+        player2ShipCords.add(new Point(0, 0));
+        player2ShipCords.add(new Point(0, 1));
+        player2ShipCords.add(new Point(0, 2));
+        Ship player2Ship = new Ship(3, "test");
+        player2Ship.setCoordinates(player2ShipCords);
+        shipsOfPlayer2.add(player2Ship);
+
+        Core core = new Core(builder, players, 10, 10);
+
+        PlayerAction action1 = new PlayerAction("Player1");
+        action1.setAction("cell selected").setPoint(new Point(9, 0));
+
+        PlayerAction action2 = new PlayerAction("Player1");
+        action2.setAction("cell selected").setPoint(new Point(9, 1));
+
+        core.handlePlayerAction(action1);
+        core.handlePlayerAction(action2);
+
+        ArgumentCaptor<GameDTO> argument = ArgumentCaptor.forClass(GameDTO.class);
+        verify(builder, times(2)).update(argument.capture());
+
+        GameDTO gameDTOArg = argument.getValue();
+        PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
+
+        assertEquals(GameMessages.PLAYER_MOVE_ERROR.toString(), player1.getMessage());
+    }
+
+    public void testHandlePlayerActionWhenPlayerMakesMoveToSameCell() {
+        GuiBuilder builder = mock(GuiBuilder.class);
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(this.player1);
+        players.add(this.player2);
+
+        ArrayList<Ship> ships = new ArrayList<>();
+        ArrayList<Point> cords = new ArrayList<>();
+        cords.add(new Point(0, 0));
+        cords.add(new Point(0, 1));
+        cords.add(new Point(0, 2));
+        Ship ship = new Ship(3, "test");
+        ship.setCoordinates(cords);
+        ships.add(ship);
+
+        this.player2.setShips(ships);
+
+        Core core = new Core(builder, players, 10, 10);
+
+        PlayerAction firstAction = new PlayerAction("Player1");
+        firstAction.setAction("cell selected").setPoint(new Point(0, 0));
+
+        PlayerAction secondAction = new PlayerAction("Player1");
+        secondAction.setAction("cell selected").setPoint(new Point(0, 1));
+
+        PlayerAction thirdActionBySameField = new PlayerAction("Player1");
+        thirdActionBySameField.setAction("cell selected").setPoint(new Point(0, 0));
+
+        core.handlePlayerAction(firstAction);
+        core.handlePlayerAction(secondAction);
+        core.handlePlayerAction(thirdActionBySameField);
+
+        ArgumentCaptor<GameDTO> argument = ArgumentCaptor.forClass(GameDTO.class);
+        verify(builder, times(3)).update(argument.capture());
+
+        GameDTO gameDTOArg = argument.getValue();
+        PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
+
+        assertEquals(GameMessages.PLAYER_MOVE_ERROR_SAME_FIELD.toString(), player1.getMessage());
     }
 
 //    public void testOnStartGameUsersShouldHaveCorrectScore() {

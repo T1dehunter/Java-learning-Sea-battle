@@ -18,6 +18,12 @@ public class PlayerDTO {
         return this;
     }
 
+    public PlayerDTO setMessage(GameMessages message) {
+        this.message = message.toString();
+
+        return this;
+    }
+
     public PlayerDTO setOwnCells(ArrayList<Cell> cells) {
         this.ownCells = cells;
 

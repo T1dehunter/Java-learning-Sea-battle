@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Player {
     private String name;
     private ArrayList<Ship> ships;
+    private ArrayList<Move> moves = new ArrayList<>();
 
     public Player(String name) {
         this.name = name;
@@ -41,6 +42,16 @@ public class Player {
         return false;
     }
 
+    public boolean isMoveWasMade(Point cordsOfPlayerMove) {
+        for (Move m : moves) {
+            if (m.getRow() == cordsOfPlayerMove.getRow() && m.getCell() == cordsOfPlayerMove.getCell()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public ArrayList<Ship> getShips() {
         return this.ships;
     }
@@ -60,8 +71,13 @@ public class Player {
         }
     }
 
-    public Move getLastMove() {
-        return new Move(0, 0, "miss");
-    }
     // temp code for test some idea
+    public Move getLastMove() {
+        return this.moves.get(this.moves.size() - 1);
+    }
+
+    public void addMove(Point cords, String status) {
+        moves.add(new Move(cords.getRow(), cords.getCell(), status));
+    }
+
 }
