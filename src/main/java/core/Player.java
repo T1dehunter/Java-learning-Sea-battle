@@ -29,22 +29,24 @@ public class Player {
         this.ships = ships;
     }
 
-    public boolean isHit(Point cordsOfPlayerMove) {
-        for (Ship s: ships) {
-            ArrayList<Point> shipCords = s.getCoordinates();
-            for (Point p : shipCords) {
-                if (p.getRow() == cordsOfPlayerMove.getRow() && p.getCell() == cordsOfPlayerMove.getCell()) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+    public boolean isHit(Point opponentMove) {
+        Ship ship = findShipByCords(opponentMove);
+        return ship != null;
     }
 
-    public boolean isMoveWasMade(Point cordsOfPlayerMove) {
+    public void addHit(Point opponentMove) {
+        Ship ship = findShipByCords(opponentMove);
+
+        if (ship == null) {
+            return;
+        }
+
+        ship.addHit(opponentMove);
+    }
+
+    public boolean isMoveWasMade(Point newMove) {
         for (Move m : moves) {
-            if (m.getRow() == cordsOfPlayerMove.getRow() && m.getCell() == cordsOfPlayerMove.getCell()) {
+            if (m.getRow() == newMove.getRow() && m.getCell() == newMove.getCell()) {
                 return true;
             }
         }
@@ -80,4 +82,17 @@ public class Player {
         moves.add(new Move(cords.getRow(), cords.getCell(), status));
     }
 
+
+    private Ship findShipByCords(Point cords) {
+        for (Ship s: ships) {
+            ArrayList<Point> shipCords = s.getCoordinates();
+            for (Point p : shipCords) {
+                if (p.getRow() == cords.getRow() && p.getCell() == cords.getCell()) {
+                    return s;
+                }
+            }
+        }
+        
+        return null;
+    }
 }

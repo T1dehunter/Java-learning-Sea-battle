@@ -112,6 +112,7 @@ public class TestCore extends TestCase {
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
 
         assertEquals(GameMessages.PLAYER_MOVE_SUCCESS_HIT.toString(), player1.getMessage());
+        assertEquals("Score of opponent was decreased", (Integer) 2, this.player2.getScore());
     }
 
     public void testHandlePlayerActionWhenPlayerHasMissHit() {
@@ -145,6 +146,7 @@ public class TestCore extends TestCase {
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
 
         assertEquals(GameMessages.PLAYER_MOVE_MISS_HIT.toString(), player1.getMessage());
+        assertEquals("Score of opponent was not decreased",(Integer) 3, this.player2.getScore());
     }
 
     public void testHandlePlayerActionWhenSamePlayerMakesSecondMoveAfterSuccessHit() {
@@ -184,6 +186,7 @@ public class TestCore extends TestCase {
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
 
         assertEquals(GameMessages.PLAYER_MOVE_SUCCESS_HIT.toString(), player1.getMessage());
+        assertEquals("Score of opponent was decreased twice", (Integer) 1, this.player2.getScore());
     }
 
     public void testHandlePlayerActionWhenSamePlayerMakesSecondMoveOutsideOfQue() {
@@ -223,6 +226,7 @@ public class TestCore extends TestCase {
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
 
         assertEquals(GameMessages.PLAYER_MOVE_ERROR.toString(), player1.getMessage());
+        assertEquals("Score of opponent was not decreased",(Integer) 3, this.player2.getScore());
     }
 
     public void testHandlePlayerActionWhenPlayerMakesMoveToSameCell() {
@@ -264,6 +268,7 @@ public class TestCore extends TestCase {
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
 
         assertEquals(GameMessages.PLAYER_MOVE_ERROR_SAME_FIELD.toString(), player1.getMessage());
+        assertEquals("Score of opponent was decreased only twice",(Integer) 1, this.player2.getScore());
     }
 
 //    public void testOnStartGameUsersShouldHaveCorrectScore() {

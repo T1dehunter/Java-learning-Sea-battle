@@ -97,6 +97,8 @@ public class Core {
             }
 
             if (opponentPlayer.isHit(selectedPointOfCurrentPlayer)) {
+                opponentPlayer.addHit(selectedPointOfCurrentPlayer);
+
                 currentPlayer.addMove(selectedPointOfCurrentPlayer, "hit");
                 currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_SUCCESS_HIT);
             } else {

@@ -1,9 +1,5 @@
 package core;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-
 import java.util.ArrayList;
 
 public class Ship {
@@ -12,7 +8,7 @@ public class Ship {
     // ??
     private String color;
 
-    ArrayList<Point> coordinates;
+    private ArrayList<Point> coordinates;
 
     public Ship(int length, String color) {
         this.length = length;
@@ -23,19 +19,33 @@ public class Ship {
         return color;
     }
 
-    public void decreaseLength() {
-        length = length - 1;
-    }
+//    public void decreaseLength() {
+//        length = length - 1;
+//    }
 
     public int getLength() {
-        return length;
+        return coordinates.size();
     }
 
     public ArrayList<Point> getCoordinates() {
         return coordinates;
     }
 
-    public void setCoordinates(ArrayList<Point> coords) {
-        coordinates = coords;
+    public void setCoordinates(ArrayList<Point> cords) {
+        coordinates = cords;
+    }
+
+    public void addHit(Point hit) {
+        int indexOfHit = -1;
+
+        for (int i = 0; i < coordinates.size(); i++) {
+            if (coordinates.get(i).getRow() == hit.getRow() && coordinates.get(i).getCell() == hit.getCell()) {
+                indexOfHit = i;
+                break;
+            }
+        }
+        if (indexOfHit > -1) {
+            coordinates.remove(indexOfHit);
+        }
     }
 }
