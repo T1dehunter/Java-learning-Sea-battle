@@ -6,7 +6,7 @@ public class PlayerDTO {
     private String name;
     private String message;
     private ArrayList<Cell> ownCells;
-    private ArrayList<Cell> enemyCells;
+    private ArrayList<Cell> opponentCells;
 
     public PlayerDTO(String name) {
         this.name = name;
@@ -30,8 +30,8 @@ public class PlayerDTO {
         return this;
     }
 
-    public PlayerDTO setEnemyCells(ArrayList<Cell> cells) {
-        this.enemyCells = cells;
+    public PlayerDTO setOpponentCells(ArrayList<Cell> cells) {
+        this.opponentCells = cells;
 
         return this;
     }
@@ -42,6 +42,10 @@ public class PlayerDTO {
 
     public ArrayList<Cell> getOwnCells() {
         return ownCells;
+    }
+
+    public ArrayList<Cell> getOpponentCells() {
+        return opponentCells;
     }
 
     public String getMessage() {

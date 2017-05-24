@@ -34,6 +34,10 @@ public class Player {
         return ship != null;
     }
 
+    public boolean isLose() {
+        return getScore() == 0;
+    }
+
     public void addHit(Point opponentMove) {
         Ship ship = findShipByCords(opponentMove);
 
@@ -82,6 +86,9 @@ public class Player {
         moves.add(new Move(cords.getRow(), cords.getCell(), status));
     }
 
+    public ArrayList<Move> getMoves() {
+        return moves;
+    }
 
     private Ship findShipByCords(Point cords) {
         for (Ship s: ships) {

@@ -16,6 +16,8 @@ public class Core {
     private Player currentPlayer;
     private Player previousPlayerWhoMadeMove;
 
+    private boolean gameInProcess;
+
     private int playerFieldWith;
     private int playerFieldHeight;
 
@@ -28,6 +30,8 @@ public class Core {
 
         this.playerFieldWith = playerFieldWith;
         this.playerFieldHeight = playerFieldHeight;
+
+        this.gameInProcess = true;
     }
 
     public void run() {
@@ -60,6 +64,10 @@ public class Core {
     }
 
     public void handlePlayerAction(PlayerAction userAction) {
+        if (!gameInProcess) {
+            return;
+        }
+
         Player currentPlayer = getPlayerByName(userAction.getPlayerName());
         Player opponentPlayer = getPlayerOpponent(userAction.getPlayerName());
 
@@ -97,12 +105,31 @@ public class Core {
             }
 
             if (opponentPlayer.isHit(selectedPointOfCurrentPlayer)) {
+                currentPlayer.addMove(selectedPointOfCurrentPlayer, "hit");
                 opponentPlayer.addHit(selectedPointOfCurrentPlayer);
 
-                currentPlayer.addMove(selectedPointOfCurrentPlayer, "hit");
-                currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_SUCCESS_HIT);
+                // set cells for opponent game field in current player screen
+                currentPlayerDTO.setOpponentCells(convertPlayerMovesToOpponentCells(currentPlayer.getMoves()));
+
+                // set cells for own game field in opponent player screen
+                opponentPlayerDTO.setOwnCells(convertPlayerMovesToOwnCells(currentPlayer.getMoves()));
+
+                if (opponentPlayer.isLose()) {
+                    currentPlayerDTO.setMessage(GameMessages.PLAYER_WIN_GAME);
+                    opponentPlayerDTO.setMessage(GameMessages.PLAYER_LOSE_GAME);
+
+                    gameInProcess = false;
+                } else {
+                    currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_SUCCESS_HIT);
+                }
             } else {
                 currentPlayer.addMove(selectedPointOfCurrentPlayer, "miss");
+                // set cells for opponent game field in current player screen
+                currentPlayerDTO.setOpponentCells(convertPlayerMovesToOpponentCells(currentPlayer.getMoves()));
+
+                // set cells for own game field in opponent player screen
+                opponentPlayerDTO.setOwnCells(convertPlayerMovesToOwnCells(currentPlayer.getMoves()));
+
                 currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_MISS_HIT);
             }
 
@@ -179,5 +206,27 @@ public class Core {
     private boolean isCurrentPlayerHasHitOnPreviousMove(Player currentPlayer) {
         return currentPlayer.getName().equals(previousPlayerWhoMadeMove.getName()) &&
                 currentPlayer.getLastMove().getStatus().equals("hit");
+    }
+
+    private ArrayList<Cell> convertPlayerMovesToOpponentCells(ArrayList<Player.Move> moves) {
+        ArrayList<Cell> cells = new ArrayList<>();
+
+        for (Player.Move m: moves) {
+            String cellColor = m.getStatus().equals("hit") ? "green" : "red";
+            cells.add(new Cell(m.getRow(), m.getCell(), cellColor));
+        }
+
+        return cells;
+    }
+
+    private ArrayList<Cell> convertPlayerMovesToOwnCells(ArrayList<Player.Move> moves) {
+        ArrayList<Cell> cells = new ArrayList<>();
+
+        for (Player.Move m: moves) {
+            String cellColor = m.getStatus().equals("hit") ? "red" : "green";
+            cells.add(new Cell(m.getRow(), m.getCell(), cellColor));
+        }
+
+        return cells;
     }
 }
