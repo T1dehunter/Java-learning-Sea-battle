@@ -109,10 +109,10 @@ public class Core {
                 opponentPlayer.addHit(selectedPointOfCurrentPlayer);
 
                 // set cells for opponent game field in current player screen
-                currentPlayerDTO.setOpponentCells(convertPlayerMovesToOpponentCells(currentPlayer.getMoves()));
+                currentPlayerDTO.setOpponentCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
 
                 // set cells for own game field in opponent player screen
-                opponentPlayerDTO.setOwnCells(convertPlayerMovesToOwnCells(currentPlayer.getMoves()));
+                opponentPlayerDTO.setOwnCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
 
                 if (opponentPlayer.isLose()) {
                     currentPlayerDTO.setMessage(GameMessages.PLAYER_WIN_GAME);
@@ -125,10 +125,10 @@ public class Core {
             } else {
                 currentPlayer.addMove(selectedPointOfCurrentPlayer, "miss");
                 // set cells for opponent game field in current player screen
-                currentPlayerDTO.setOpponentCells(convertPlayerMovesToOpponentCells(currentPlayer.getMoves()));
+                currentPlayerDTO.setOpponentCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
 
                 // set cells for own game field in opponent player screen
-                opponentPlayerDTO.setOwnCells(convertPlayerMovesToOwnCells(currentPlayer.getMoves()));
+                opponentPlayerDTO.setOwnCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
 
                 currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_MISS_HIT);
             }
@@ -208,22 +208,11 @@ public class Core {
                 currentPlayer.getLastMove().getStatus().equals("hit");
     }
 
-    private ArrayList<Cell> convertPlayerMovesToOpponentCells(ArrayList<Player.Move> moves) {
+    private ArrayList<Cell> convertPlayerMovesToCells(ArrayList<Player.Move> moves) {
         ArrayList<Cell> cells = new ArrayList<>();
 
         for (Player.Move m: moves) {
             String cellColor = m.getStatus().equals("hit") ? "green" : "red";
-            cells.add(new Cell(m.getRow(), m.getCell(), cellColor));
-        }
-
-        return cells;
-    }
-
-    private ArrayList<Cell> convertPlayerMovesToOwnCells(ArrayList<Player.Move> moves) {
-        ArrayList<Cell> cells = new ArrayList<>();
-
-        for (Player.Move m: moves) {
-            String cellColor = m.getStatus().equals("hit") ? "red" : "green";
             cells.add(new Cell(m.getRow(), m.getCell(), cellColor));
         }
 

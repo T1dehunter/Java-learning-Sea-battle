@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 
 public class TestCore extends TestCase {
-    private Core core;
     private GuiBuilder builder;
 
     private Player player1;
@@ -28,17 +27,6 @@ public class TestCore extends TestCase {
     private ArrayList<Ship> shipsOfPlayer2;
 
     private ArrayList<Player> players = new ArrayList<>();
-
-
-    private int playerGameFieldWidth = 10;
-    private int playerGameFieldHeight = 10;
-
-    public TestCore() {
-//        this.players.add(new Player("Vasya"));
-//        this.players.add(new Player("Petya"));
-//
-//        this.core = new Core(builder, players);
-    }
 
     @Override
     protected void setUp() throws Exception {
@@ -53,7 +41,7 @@ public class TestCore extends TestCase {
         players.add(this.player1);
         players.add(this.player2);
 
-        this.builder = new GuiBuilder(playerGameFieldWidth, playerGameFieldHeight);
+        this.builder = new GuiBuilder(10, 10);
 //        this.core = new Core(this.builder, players, playerGameFieldWidth, playerGameFieldHeight);
     }
 
@@ -122,7 +110,7 @@ public class TestCore extends TestCase {
         assertEquals("Column of cell in player1 opponent field is correct", player1OpponentCells.get(0).getCell(), selectedPoint.getCell());
         assertEquals("Row of cell in player1 opponent field is correct", player1OpponentCells.get(0).getRow(), selectedPoint.getRow());
 
-        assertEquals("Color of cell in player2 own field is correct", player2OwnCells.get(0).getColor(), "red");
+        assertEquals("Color of cell in player2 own field is correct", player2OwnCells.get(0).getColor(), "green");
         assertEquals("Column of cell in player2 own field is correct", player2OwnCells.get(0).getCell(), selectedPoint.getCell());
         assertEquals("Row of cell in player2 own field is correct", player2OwnCells.get(0).getRow(), selectedPoint.getRow());
     }
@@ -168,9 +156,9 @@ public class TestCore extends TestCase {
         assertEquals("Column of cell in player1 opponent field is correct", player1OpponentCells.get(0).getCell(), selectedPoint.getCell());
         assertEquals("Row of cell in player1 opponent field is correct", player1OpponentCells.get(0).getRow(), selectedPoint.getRow());
 
-//        assertEquals("Color of cell in player2 own field is correct", "red", player2OwnCells.get(0).getColor());
-//        assertEquals("Column of cell in player2 own field is correct", selectedPoint.getCell(), player2OwnCells.get(0).getCell());
-//        assertEquals("Row of cell in player2 own field is correct", selectedPoint.getRow(), player2OwnCells.get(0).getRow());
+        assertEquals("Color of cell in player2 own field is correct", "red", player2OwnCells.get(0).getColor());
+        assertEquals("Column of cell in player2 own field is correct", selectedPoint.getCell(), player2OwnCells.get(0).getCell());
+        assertEquals("Row of cell in player2 own field is correct", selectedPoint.getRow(), player2OwnCells.get(0).getRow());
     }
 
     public void testHandlePlayerActionWhenSamePlayerMakesSecondMoveAfterSuccessHit() {
@@ -178,8 +166,6 @@ public class TestCore extends TestCase {
         ArrayList<Player> players = new ArrayList<>();
         players.add(this.player1);
         players.add(this.player2);
-
-
 
         ArrayList<Ship> ships = new ArrayList<>();
         ArrayList<Point> cords = new ArrayList<>();
@@ -208,9 +194,14 @@ public class TestCore extends TestCase {
 
         GameDTO gameDTOArg = argument.getValue();
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
+        ArrayList<Cell> player1OpponentCells = player1.getOpponentCells();
+
 
         assertEquals(GameMessages.PLAYER_MOVE_SUCCESS_HIT.toString(), player1.getMessage());
         assertEquals("Score of opponent was decreased twice", (Integer) 1, this.player2.getScore());
+        assertEquals("Count cells is correct", 2, player1OpponentCells.size());
+        assertEquals("Cell from first move in opponent field on player screen has correct color", "green", player1OpponentCells.get(0).getColor());
+        assertEquals("Cell from second move in opponent field on player screen has correct color", "green", player1OpponentCells.get(1).getColor());
     }
 
     public void testHandlePlayerActionWhenSamePlayerMakesSecondMoveOutsideOfQue() {
