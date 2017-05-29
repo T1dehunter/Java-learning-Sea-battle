@@ -9,7 +9,9 @@ import java.util.List;
 
 @XmlRootElement(name="ShipBuilder", namespace="ShipBuilder")
 @XmlAccessorType(XmlAccessType.FIELD)
-class ShipBuilder {
+public class ShipBuilder {
+    CoordsBuilder coordsBuilder;
+
     public static class ShipSetting {
         @XmlElement(name = "type")
         private String type;
@@ -27,11 +29,16 @@ class ShipBuilder {
             return "\n type: " + type + "| count: " + count + "| length: " + length + "| color: " + color;
         }
     }
-
-
     @XmlElement(name="ShipSetting")
     private List<ShipSetting> listSettings;
 
+    public ShipBuilder() {
+        System.out.print("TEST SHIP BUILDER");
+    }
+
+    public void setCordsBuilder(CoordsBuilder coordsBuilder) {
+        this.coordsBuilder = coordsBuilder;
+    }
 
     public ShipSetting getShipByType() {
         return listSettings.get(1);
@@ -43,6 +50,10 @@ class ShipBuilder {
         for (ShipSetting setting: listSettings) {
             for (int i = 0; i < setting.count; i++) {
                 Ship ship = new Ship(setting.length, setting.color);
+
+                ArrayList<Point> randomCords = coordsBuilder.buildRandomCoords(setting.length);
+                ship.setCoordinates(randomCords);
+
                 result.add(ship);
             }
         }

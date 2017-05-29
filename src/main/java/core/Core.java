@@ -3,11 +3,7 @@ package core;
 import gui.GuiBuilder;
 import gui.PlayerAction;
 
-import java.io.InputStream;
 import java.util.*;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 
 public class Core {
     private GuiBuilder builder;
@@ -39,9 +35,10 @@ public class Core {
 
         for (Player player: players) {
             ArrayList<Cell> playerCells = new ArrayList<Cell>();
-            ArrayList<Ship> ships = this.buildPlayerShips();
 
-            player.setShips(ships);
+            player.placeShips();
+
+            ArrayList<Ship> ships = player.getShips();
 
             for (Ship s : ships) {
                 for (Point p : s.getCoordinates()) {
@@ -135,42 +132,6 @@ public class Core {
 
             builder.update(gameData);
         }
-    }
-
-
-    // ??
-    private ArrayList<Ship> buildPlayerShips() {
-        CoordsBuilder coordsBuilder = new CoordsBuilder(playerFieldWith, playerFieldHeight);
-        ShipBuilder shipBuilder = getShipBuilder();
-        ArrayList<Ship> ships = shipBuilder.buildListShips();
-
-        for (Ship s: ships) {
-            ArrayList<Point> randomCords = coordsBuilder.buildRandomCoords(s.getLength());
-            s.setCoordinates(randomCords);
-        }
-
-        return ships;
-    }
-
-    // ??
-    private ShipBuilder getShipBuilder() {
-        ShipBuilder builder;
-        try {
-            JAXBContext jc = JAXBContext.newInstance(ShipBuilder.class);
-
-            Unmarshaller unmarshaller = jc.createUnmarshaller();
-            InputStream xml = getClass().getClassLoader().getResourceAsStream("config/ships.settings");
-            builder = (ShipBuilder) unmarshaller.unmarshal(xml);
-
-            Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "ShipBuilder.xsd");
-        } catch (Exception e) {
-            builder = null;
-            e.printStackTrace();
-        }
-
-        return builder;
     }
 
     private boolean isCorrectOrderOfMoveForPlayer(String playerName) {
