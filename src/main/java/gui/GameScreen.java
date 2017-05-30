@@ -19,6 +19,14 @@ public class GameScreen {
         this.opponentField = new GameField(gameFieldWidth, gameFieldHeight, handler, action);
     }
 
+    public GameField getPlayerField() {
+        return playerField;
+    }
+
+    public GameField getOpponentField() {
+        return opponentField;
+    }
+
     public void build(String data) {
         JFrame mainFrame;
         JPanel controlPanel;

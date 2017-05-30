@@ -9,23 +9,13 @@ public class Core {
     private GuiBuilder builder;
 
     private ArrayList<Player> players;
-    private Player currentPlayer;
     private Player previousPlayerWhoMadeMove;
 
     private boolean gameInProcess;
 
-    private int playerFieldWith;
-    private int playerFieldHeight;
-
-    public Core(GuiBuilder builder, ArrayList<Player> players, int playerFieldWith, int playerFieldHeight) {
+    public Core(GuiBuilder builder, ArrayList<Player> players) {
         this.builder = builder;
         this.players = players;
-
-        // for test
-        this.currentPlayer = players.get(0);
-
-        this.playerFieldWith = playerFieldWith;
-        this.playerFieldHeight = playerFieldHeight;
 
         this.gameInProcess = true;
     }

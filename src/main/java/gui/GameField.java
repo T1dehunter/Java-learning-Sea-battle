@@ -52,10 +52,6 @@ class GameField extends JFrame {
         init();
     }
 
-    void display(String s) {
-        System.out.print("Field displays -> " + s);
-    }
-
     JTable getElement() {
         return table;
     }
@@ -103,6 +99,57 @@ class GameField extends JFrame {
                 return null;
             }
         }
+
+        table.setDefaultRenderer(Object.class, new CellRenderer(cords));
+    }
+
+    public void display(String s) {
+        System.out.print("Field displays -> " + s);
+
+        class CellRenderer extends DefaultTableCellRenderer {
+            private ArrayList<Cell> cords;
+
+            private CellRenderer(ArrayList<Cell> cords) {
+                this.cords = cords;
+            }
+
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int cell) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, cell);
+
+                Cell playerCell = getCell(row, cell);
+
+                if (playerCell != null) {
+                    if (playerCell.getColor().equals("orange"))
+                        c.setBackground(Color.ORANGE);
+                    if (playerCell.getColor().equals("green"))
+                        c.setBackground(Color.GREEN);
+                    if (playerCell.getColor().equals("blue"))
+                        c.setBackground(Color.BLUE);
+                    if (playerCell.getColor().equals("yellow"))
+                        c.setBackground(Color.YELLOW);
+                    if (playerCell.getColor().equals("red"))
+                        c.setBackground(Color.RED);
+                } else {
+                    c.setBackground(Color.GRAY);
+                }
+
+                return c;
+            }
+
+            private Cell getCell(int cellRow, int cellColumn) {
+                for (Cell c : cords) {
+                    if (c.getRow() == cellRow && c.getCell() == cellColumn) {
+                        return c;
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        ArrayList<Cell> test = new ArrayList<>();
+
+        cords.add(new Cell(9, 9, "blue"));
 
         table.setDefaultRenderer(Object.class, new CellRenderer(cords));
     }

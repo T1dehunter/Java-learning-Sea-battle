@@ -1,8 +1,6 @@
 package core;
 
-import core.ShipBuilder;
 import gui.GuiBuilder;
-import core.Player;
 import core.GameMessages;
 
 import gui.PlayerAction;
@@ -15,6 +13,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
+import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 
@@ -29,15 +28,19 @@ public class TestCore extends TestCase {
 
     private ArrayList<Player> players = new ArrayList<>();
 
-       /*
     @Override
 
     protected void setUp() throws Exception {
-        this.player1 = new Player("Player1");
+        GameSettings settings = new GameSettings("config/config.properties");
+        Properties props = settings.getSettings();
+
+        PlayerCreator creator = new PlayerCreator(props);
+
+        this.player1 = creator.create("Player1");
         this.shipsOfPlayer1 = new ArrayList<>();
         this.player1.setShips(this.shipsOfPlayer1);
 
-        this.player2 = new Player("Player2");
+        this.player2 = creator.create("Player2");
         this.shipsOfPlayer2 = new ArrayList<>();
         this.player2.setShips(this.shipsOfPlayer2);
 
@@ -47,7 +50,6 @@ public class TestCore extends TestCase {
         this.builder = new GuiBuilder(10, 10);
 //        this.core = new Core(this.builder, players, playerGameFieldWidth, playerGameFieldHeight);
     }
-    */
 
 //    public void testHandlePlayerAction() {
 //        GuiBuilder builder = mock(GuiBuilder.class);
@@ -78,7 +80,7 @@ public class TestCore extends TestCase {
         assertEquals(1, 1);
     }
 
-    /*
+
 
     public void testHandlePlayerActionWhenPlayerHasSuccessHit() {
         GuiBuilder builder = mock(GuiBuilder.class);
@@ -97,7 +99,7 @@ public class TestCore extends TestCase {
 
         this.player2.setShips(ships);
 
-        Core core = new Core(builder, players, 10, 10);
+        Core core = new Core(builder, players);
 
         PlayerAction action1 = new PlayerAction("Player1");
         Point selectedPoint = new Point(0, 0);
@@ -143,7 +145,7 @@ public class TestCore extends TestCase {
 
         this.player2.setShips(ships);
 
-        Core core = new Core(builder, players, 10, 10);
+        Core core = new Core(builder, players);
 
         PlayerAction action1 = new PlayerAction("Player1");
         Point selectedPoint = new Point(9, 9);
@@ -189,7 +191,7 @@ public class TestCore extends TestCase {
 
         this.player2.setShips(ships);
 
-        Core core = new Core(builder, players, 10, 10);
+        Core core = new Core(builder, players);
 
         PlayerAction action1 = new PlayerAction("Player1");
         action1.setAction("cell selected").setPoint(new Point(0, 0));
@@ -234,7 +236,7 @@ public class TestCore extends TestCase {
         player2Ship.setCoordinates(player2ShipCords);
         shipsOfPlayer2.add(player2Ship);
 
-        Core core = new Core(builder, players, 10, 10);
+        Core core = new Core(builder, players);
 
         PlayerAction action1 = new PlayerAction("Player1");
         action1.setAction("cell selected").setPoint(new Point(9, 0));
@@ -272,7 +274,7 @@ public class TestCore extends TestCase {
 
         this.player2.setShips(ships);
 
-        Core core = new Core(builder, players, 10, 10);
+        Core core = new Core(builder, players);
 
         PlayerAction firstAction = new PlayerAction("Player1");
         firstAction.setAction("cell selected").setPoint(new Point(0, 0));
@@ -312,7 +314,7 @@ public class TestCore extends TestCase {
 
         this.player2.setShips(ships);
 
-        Core core = new Core(builder, players, 10, 10);
+        Core core = new Core(builder, players);
 
         PlayerAction gameWinAction = new PlayerAction("Player1");
         gameWinAction.setAction("cell selected").setPoint(new Point(0, 0));
@@ -346,7 +348,7 @@ public class TestCore extends TestCase {
 
         this.player2.setShips(ships);
 
-        Core core = new Core(builder, players, 10, 10);
+        Core core = new Core(builder, players);
 
         PlayerAction gameWinAction = new PlayerAction("Player1");
         gameWinAction.setAction("cell selected").setPoint(new Point(0, 0));
@@ -383,7 +385,7 @@ public class TestCore extends TestCase {
 
         this.player2.setShips(ships);
 
-        Core core = new Core(builder, players, 10, 10);
+        Core core = new Core(builder, players);
 
         PlayerAction gameWinAction = new PlayerAction("Player1");
         gameWinAction.setAction("cell selected").setPoint(new Point(0, 0));
@@ -404,7 +406,4 @@ public class TestCore extends TestCase {
         assertEquals(GameMessages.PLAYER_WIN_GAME.toString(), player1.getMessage());
         assertEquals(GameMessages.PLAYER_LOSE_GAME.toString(), player2.getMessage());
     }
-
-
-    */
 }
