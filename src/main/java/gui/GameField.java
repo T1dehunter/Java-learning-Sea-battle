@@ -16,6 +16,39 @@ class GameField extends JFrame {
 
     private final JTable table;
 
+    class CellRenderer extends DefaultTableCellRenderer {
+        private ArrayList<Cell> cords = new ArrayList<>();
+
+        CellRenderer(ArrayList<Cell> cords) {
+            this.cords = cords;
+        }
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int cell) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, cell);
+
+            Cell playerCell = GameField.this.getCell(row, cell);
+
+            if (playerCell != null) {
+                if (playerCell.getColor().equals("pink"))
+                    c.setBackground(Color.PINK);
+                if (playerCell.getColor().equals("orange"))
+                    c.setBackground(Color.ORANGE);
+                if (playerCell.getColor().equals("green"))
+                    c.setBackground(Color.GREEN);
+                if (playerCell.getColor().equals("blue"))
+                    c.setBackground(Color.BLUE);
+                if (playerCell.getColor().equals("yellow"))
+                    c.setBackground(Color.YELLOW);
+                if (playerCell.getColor().equals("red"))
+                    c.setBackground(Color.RED);
+            } else {
+                c.setBackground(Color.GRAY);
+            }
+
+            return c;
+        }
+    }
+
     GameField(int width, int height, PlayerActionHandler handler, PlayerAction action) {
         super("Game field");
 
@@ -28,7 +61,6 @@ class GameField extends JFrame {
         init();
 
         table.addMouseListener(new java.awt.event.MouseAdapter() {
-
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 int row = table.rowAtPoint(e.getPoint());
                 int col = table.columnAtPoint(e.getPoint());
@@ -56,100 +88,29 @@ class GameField extends JFrame {
         return table;
     }
 
-    private void init() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        class CellRenderer extends DefaultTableCellRenderer {
-            private ArrayList<Cell> cords;
-
-            private CellRenderer(ArrayList<Cell> cords) {
-                this.cords = cords;
-            }
-
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int cell) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, cell);
-
-                Cell playerCell = getCell(row, cell);
-
-                if (playerCell != null) {
-                    if (playerCell.getColor().equals("orange"))
-                        c.setBackground(Color.ORANGE);
-                    if (playerCell.getColor().equals("green"))
-                        c.setBackground(Color.GREEN);
-                    if (playerCell.getColor().equals("blue"))
-                        c.setBackground(Color.BLUE);
-                    if (playerCell.getColor().equals("yellow"))
-                        c.setBackground(Color.YELLOW);
-                    if (playerCell.getColor().equals("red"))
-                        c.setBackground(Color.RED);
-                } else {
-                    c.setBackground(Color.GRAY);
-                }
-
+    private Cell getCell(int cellRow, int cellColumn) {
+        for (Cell c : cords) {
+            if (c.getRow() == cellRow && c.getCell() == cellColumn) {
                 return c;
             }
-
-            private Cell getCell(int cellRow, int cellColumn) {
-                for (Cell c : cords) {
-                    if (c.getRow() == cellRow && c.getCell() == cellColumn) {
-                        return c;
-                    }
-                }
-
-                return null;
-            }
         }
+        return null;
+    }
+
+    private void init() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         table.setDefaultRenderer(Object.class, new CellRenderer(cords));
     }
 
-    public void display(String s) {
-        System.out.print("Field displays -> " + s);
+    public void display(Cell c) {
+        Cell existsCell = getCell(c.getRow(), c.getCell());
 
-        class CellRenderer extends DefaultTableCellRenderer {
-            private ArrayList<Cell> cords;
-
-            private CellRenderer(ArrayList<Cell> cords) {
-                this.cords = cords;
-            }
-
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int cell) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, cell);
-
-                Cell playerCell = getCell(row, cell);
-
-                if (playerCell != null) {
-                    if (playerCell.getColor().equals("orange"))
-                        c.setBackground(Color.ORANGE);
-                    if (playerCell.getColor().equals("green"))
-                        c.setBackground(Color.GREEN);
-                    if (playerCell.getColor().equals("blue"))
-                        c.setBackground(Color.BLUE);
-                    if (playerCell.getColor().equals("yellow"))
-                        c.setBackground(Color.YELLOW);
-                    if (playerCell.getColor().equals("red"))
-                        c.setBackground(Color.RED);
-                } else {
-                    c.setBackground(Color.GRAY);
-                }
-
-                return c;
-            }
-
-            private Cell getCell(int cellRow, int cellColumn) {
-                for (Cell c : cords) {
-                    if (c.getRow() == cellRow && c.getCell() == cellColumn) {
-                        return c;
-                    }
-                }
-
-                return null;
-            }
+        if (existsCell != null) {
+            cords.remove(existsCell);
         }
 
-        ArrayList<Cell> test = new ArrayList<>();
-
-        cords.add(new Cell(9, 9, "blue"));
+        cords.add(c);
 
         table.setDefaultRenderer(Object.class, new CellRenderer(cords));
     }

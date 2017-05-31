@@ -62,6 +62,8 @@ public class Core {
             return;
         }
 
+        System.out.print("Current player -> " + currentPlayer.getName() + " \n");
+
         PlayerDTO currentPlayerDTO = new PlayerDTO(userAction.getPlayerName());
         PlayerDTO opponentPlayerDTO = new PlayerDTO(opponentPlayer.getName());
 
@@ -86,6 +88,8 @@ public class Core {
 
             if (currentPlayer.isMoveWasMade(selectedPointOfCurrentPlayer)) {
                 currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_ERROR_SAME_FIELD);
+                opponentPlayerDTO.setMessage(GameMessages.PLAYER_TURN_MOVE);
+
                 builder.update(gameData);
 
                 return;
@@ -118,6 +122,7 @@ public class Core {
                 opponentPlayerDTO.setOwnCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
 
                 currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_MISS_HIT);
+                opponentPlayerDTO.setMessage(GameMessages.PLAYER_TURN_MOVE);
             }
 
             builder.update(gameData);

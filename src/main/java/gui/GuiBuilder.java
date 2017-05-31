@@ -32,6 +32,7 @@ public class GuiBuilder implements PlayerActionHandler {
         }
     }
 
+    // ??
     public void handle(PlayerAction action) {
         core.handlePlayerAction(action);
     }
@@ -45,23 +46,22 @@ public class GuiBuilder implements PlayerActionHandler {
         for (PlayerDTO playerData: gameData.getPlayersData()) {
             GameScreen screen = playersScreens.get(playerData.getName());
 
+            screen.setMessage(playerData.getMessage());
+
             ArrayList<Cell> ownCells = playerData.getOwnCells();
             ArrayList<Cell> opponentCells = playerData.getOpponentCells();
-
-
             GameField fieldForUpdate;
             if (ownCells != null) {
                 fieldForUpdate = screen.getPlayerField();
-                fieldForUpdate.display("fff");
+                fieldForUpdate.display(ownCells.get(ownCells.size() - 1));
             }
 
             if (opponentCells != null) {
                 fieldForUpdate = screen.getOpponentField();
-                fieldForUpdate.display("fff");
+                fieldForUpdate.display(opponentCells.get(opponentCells.size() - 1));
             }
 
-
-            screen.update(playerData);
+//            screen.update(playerData);
         }
     }
 }

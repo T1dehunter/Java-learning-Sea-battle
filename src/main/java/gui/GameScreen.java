@@ -12,7 +12,7 @@ public class GameScreen {
     private GameField playerField;
     private GameField opponentField;
 
-    private JLabel statusLabel;
+    private JLabel messageLabel;
 
     public GameScreen(int gameFieldWidth, int gameFieldHeight, PlayerDTO playerData, PlayerActionHandler handler, PlayerAction action) {
         this.playerField = new GameField(gameFieldWidth, gameFieldHeight, playerData.getOwnCells());
@@ -31,8 +31,8 @@ public class GameScreen {
         JFrame mainFrame;
         JPanel controlPanel;
 
-        playerField.display(data);
-        opponentField.display(data);
+//        playerField.display(data);
+//        opponentField.display(data);
 
         mainFrame = new JFrame("Java Swing Examples");
         mainFrame.setSize(400,400);
@@ -43,13 +43,13 @@ public class GameScreen {
             }
         });
 
-        statusLabel = new JLabel("some text",JLabel.CENTER);
+        messageLabel = new JLabel("some text",JLabel.CENTER);
         controlPanel = new JPanel();
 
         mainFrame.add(playerField.getElement());
         mainFrame.add(new JLabel("",JLabel.CENTER));
         mainFrame.add(opponentField.getElement());
-        mainFrame.add(statusLabel);
+        mainFrame.add(messageLabel);
         mainFrame.add(controlPanel);
 
         JButton submitButton = new JButton("Submit");
@@ -58,13 +58,13 @@ public class GameScreen {
 
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                statusLabel.setText("Submit Button clicked.");
+                messageLabel.setText("Submit Button clicked.");
             }
         });
 
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                statusLabel.setText("Cancel Button clicked.");
+                messageLabel.setText("Cancel Button clicked.");
             }
         });
 
@@ -72,6 +72,12 @@ public class GameScreen {
         controlPanel.add(cancelButton);
         mainFrame.setVisible(true);
         mainFrame.pack();
+    }
+
+    public void setMessage(String message) {
+        if (message != null) {
+            messageLabel.setText(message);
+        }
     }
 
     public void update(PlayerDTO playerData) {
