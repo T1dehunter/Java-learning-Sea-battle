@@ -1,7 +1,9 @@
 package gui;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -13,39 +15,31 @@ class GameField extends JFrame {
     private PlayerActionHandler handler;
     private PlayerAction action;
     private ArrayList<Cell> cords;
+    private MyTableModel model;
 
     private final JTable table;
 
-    class CellRenderer extends DefaultTableCellRenderer {
-        private ArrayList<Cell> cords = new ArrayList<>();
+    public class MyTableModel extends AbstractTableModel {
+        private int width;
+        private int height;
 
-        CellRenderer(ArrayList<Cell> cords) {
-            this.cords = cords;
+        public MyTableModel(int width, int height) {
+            super();
+
+            this.width = width;
+            this.height = height;
         }
-
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int cell) {
-            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, cell);
-
-            Cell playerCell = GameField.this.getCell(row, cell);
-
-            if (playerCell != null) {
-                if (playerCell.getColor().equals("pink"))
-                    c.setBackground(Color.PINK);
-                if (playerCell.getColor().equals("orange"))
-                    c.setBackground(Color.ORANGE);
-                if (playerCell.getColor().equals("green"))
-                    c.setBackground(Color.GREEN);
-                if (playerCell.getColor().equals("blue"))
-                    c.setBackground(Color.BLUE);
-                if (playerCell.getColor().equals("yellow"))
-                    c.setBackground(Color.YELLOW);
-                if (playerCell.getColor().equals("red"))
-                    c.setBackground(Color.RED);
-            } else {
-                c.setBackground(Color.GRAY);
-            }
-
-            return c;
+        @Override
+        public int getRowCount() {
+            return width;
+        }
+        @Override
+        public int getColumnCount() {
+            return height;
+        }
+        @Override
+        public Object getValueAt(int r, int c) {
+            return "";
         }
     }
 
@@ -56,7 +50,9 @@ class GameField extends JFrame {
         this.handler = handler;
         this.action = action;
 
-        table = new JTable(width, height);
+        this.model = new MyTableModel(width, height);
+
+        table = new JTable(this.model);
 
         init();
 
@@ -79,7 +75,9 @@ class GameField extends JFrame {
 
         this.cords = cells;
 
-        table = new JTable(width, height);
+        this.model = new MyTableModel(width, height);
+
+        table = new JTable(this.model);
 
         init();
     }
@@ -100,7 +98,32 @@ class GameField extends JFrame {
     private void init() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        table.setDefaultRenderer(Object.class, new CellRenderer(cords));
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int cell) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, cell);
+
+                Cell playerCell = getCell(row, cell);
+
+                if (playerCell != null) {
+                    if (playerCell.getColor().equals("pink"))
+                        c.setBackground(Color.PINK);
+                    if (playerCell.getColor().equals("orange"))
+                        c.setBackground(Color.ORANGE);
+                    if (playerCell.getColor().equals("green"))
+                        c.setBackground(Color.GREEN);
+                    if (playerCell.getColor().equals("blue"))
+                        c.setBackground(Color.BLUE);
+                    if (playerCell.getColor().equals("yellow"))
+                        c.setBackground(Color.YELLOW);
+                    if (playerCell.getColor().equals("red"))
+                        c.setBackground(Color.RED);
+                } else {
+                    c.setBackground(Color.GRAY);
+                }
+
+                return c;
+            }
+        });
     }
 
     public void display(Cell c) {
@@ -112,6 +135,6 @@ class GameField extends JFrame {
 
         cords.add(c);
 
-        table.setDefaultRenderer(Object.class, new CellRenderer(cords));
+        model.fireTableDataChanged();
     }
 }
