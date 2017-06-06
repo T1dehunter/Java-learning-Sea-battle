@@ -3,25 +3,17 @@ package core;
 import java.util.ArrayList;
 
 public class Ship {
-    private int length;
-
-    // ??
     private String color;
 
     private ArrayList<Point> coordinates;
 
-    public Ship(int length, String color) {
-        this.length = length;
+    public Ship(String color) {
         this.color = color;
     }
 
     public String getColor() {
         return color;
     }
-
-//    public void decreaseLength() {
-//        length = length - 1;
-//    }
 
     public int getLength() {
         return coordinates.size();

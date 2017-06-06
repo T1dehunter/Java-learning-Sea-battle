@@ -7,11 +7,13 @@ import java.util.*;
 
 public class Core {
     private GuiBuilder builder;
-
     private ArrayList<Player> players;
     private Player previousPlayerWhoMadeMove;
-
     private boolean gameInProcess;
+
+    private final String  STATUS_HIT = "hit";
+    private final String  STATUS_MISS = "miss";
+    private final String  ACTION_TYPE_CELL_SELECTED = "cell selected";
 
     public Core(GuiBuilder builder, ArrayList<Player> players) {
         this.builder = builder;
@@ -50,13 +52,13 @@ public class Core {
         builder.build(gameData);
     }
 
-    public void handlePlayerAction(PlayerAction userAction) {
+    public void handlePlayerAction(PlayerAction playerAction) {
         if (!gameInProcess) {
             return;
         }
 
-        Player currentPlayer = getPlayerByName(userAction.getPlayerName());
-        Player opponentPlayer = getPlayerOpponent(userAction.getPlayerName());
+        Player currentPlayer = getCurrentPlayer(playerAction.getPlayerName());
+        Player opponentPlayer = getOpponentPlayer(playerAction.getPlayerName());
 
         if (currentPlayer == null || opponentPlayer == null) {
             return;
@@ -64,78 +66,33 @@ public class Core {
 
         System.out.print("Current player -> " + currentPlayer.getName() + " \n");
 
-        PlayerDTO currentPlayerDTO = new PlayerDTO(userAction.getPlayerName());
-        PlayerDTO opponentPlayerDTO = new PlayerDTO(opponentPlayer.getName());
+        if (playerAction.getAction().equals(ACTION_TYPE_CELL_SELECTED)) {
+            GameDTO gameData;
+            Point playerMove = playerAction.getPoint();
 
-        ArrayList<PlayerDTO> playersData = new ArrayList<>();
-
-        playersData.add(currentPlayerDTO);
-        playersData.add(opponentPlayerDTO);
-
-        GameDTO gameData = new GameDTO("test", playersData);
-
-        if (userAction.getAction().equals("cell selected")) {
-            if (!isCorrectOrderOfMoveForPlayer(userAction.getPlayerName())) {
-                currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_ERROR);
-                builder.update(gameData);
-
-                return;
+            if (!isCorrectOrderOfMoveForPlayer(currentPlayer.getName())) {
+                gameData = handleIncorrectOrderOfMove(currentPlayer, opponentPlayer);
+            } else if (currentPlayer.isMoveWasMade(playerMove)) {
+                gameData = handleMoveToSameCell(currentPlayer, opponentPlayer);
+            } else if (opponentPlayer.isHit(playerMove)) {
+                gameData = handleMoveHit(currentPlayer, opponentPlayer, playerMove);
+            } else {
+                gameData = handleMoveMiss(currentPlayer, opponentPlayer, playerMove);
             }
 
             previousPlayerWhoMadeMove = currentPlayer;
-
-            Point selectedPointOfCurrentPlayer = userAction.getPoint();
-
-            if (currentPlayer.isMoveWasMade(selectedPointOfCurrentPlayer)) {
-                currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_ERROR_SAME_FIELD);
-                opponentPlayerDTO.setMessage(GameMessages.PLAYER_TURN_MOVE);
-
-                builder.update(gameData);
-
-                return;
-            }
-
-            if (opponentPlayer.isHit(selectedPointOfCurrentPlayer)) {
-                currentPlayer.addMove(selectedPointOfCurrentPlayer, "hit");
-                opponentPlayer.addHit(selectedPointOfCurrentPlayer);
-
-                // set cells for opponent game field in current player screen
-                currentPlayerDTO.setOpponentCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
-
-                // set cells for own game field in opponent player screen
-                opponentPlayerDTO.setOwnCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
-
-                if (opponentPlayer.isLose()) {
-                    currentPlayerDTO.setMessage(GameMessages.PLAYER_WIN_GAME);
-                    opponentPlayerDTO.setMessage(GameMessages.PLAYER_LOSE_GAME);
-
-                    gameInProcess = false;
-                } else {
-                    currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_SUCCESS_HIT);
-                }
-            } else {
-                currentPlayer.addMove(selectedPointOfCurrentPlayer, "miss");
-                // set cells for opponent game field in current player screen
-                currentPlayerDTO.setOpponentCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
-
-                // set cells for own game field in opponent player screen
-                opponentPlayerDTO.setOwnCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
-
-                currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_MISS_HIT);
-                opponentPlayerDTO.setMessage(GameMessages.PLAYER_TURN_MOVE);
-            }
 
             builder.update(gameData);
         }
     }
 
     private boolean isCorrectOrderOfMoveForPlayer(String playerName) {
-        Player currentPlayer = getPlayerByName(playerName);
+        Player currentPlayer = getCurrentPlayer(playerName);
 
         return isPreviousAndCurrentPlayersAreDifferent(currentPlayer) || isCurrentPlayerHasHitOnPreviousMove(currentPlayer);
     }
 
-    private Player getPlayerByName(String name) {
+    private Player getCurrentPlayer(String name) {
         for (Player player : players) {
             if (player.getName().equals(name)) {
                 return player;
@@ -145,7 +102,7 @@ public class Core {
         return null;
     }
 
-    private Player getPlayerOpponent(String playerName) {
+    private Player getOpponentPlayer(String playerName) {
         for (Player player : players) {
             if (!player.getName().equals(playerName)) {
                 return player;
@@ -161,17 +118,98 @@ public class Core {
 
     private boolean isCurrentPlayerHasHitOnPreviousMove(Player currentPlayer) {
         return currentPlayer.getName().equals(previousPlayerWhoMadeMove.getName()) &&
-                currentPlayer.getLastMove().getStatus().equals("hit");
+                currentPlayer.getLastMove().getStatus().equals(STATUS_HIT);
     }
 
     private ArrayList<Cell> convertPlayerMovesToCells(ArrayList<Player.Move> moves) {
         ArrayList<Cell> cells = new ArrayList<>();
 
         for (Player.Move m: moves) {
-            String cellColor = m.getStatus().equals("hit") ? "green" : "red";
+            String cellColor = m.getStatus().equals(STATUS_HIT) ? "green" : "red";
             cells.add(new Cell(m.getRow(), m.getCell(), cellColor));
         }
 
         return cells;
+    }
+
+    private GameDTO buildGameData(String currentPlayerName, String opponentPlayerName) {
+        PlayerDTO currentPlayerDTO = new PlayerDTO(currentPlayerName);
+        PlayerDTO opponentPlayerDTO = new PlayerDTO(opponentPlayerName);
+
+        ArrayList<PlayerDTO> playersData = new ArrayList<>();
+
+        playersData.add(currentPlayerDTO);
+        playersData.add(opponentPlayerDTO);
+
+        return new GameDTO("test", playersData);
+    }
+
+    private GameDTO handleIncorrectOrderOfMove(Player currentPlayer, Player opponentPlayer) {
+        GameDTO gameDTO = buildGameData(currentPlayer.getName(), opponentPlayer.getName());
+
+        PlayerDTO currentPlayerDTO = gameDTO.getPlayersData().get(0);
+
+        currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_ERROR);
+
+        return gameDTO;
+    }
+
+    private GameDTO handleMoveToSameCell(Player currentPlayer, Player opponentPlayer) {
+        GameDTO gameDTO = buildGameData(currentPlayer.getName(), opponentPlayer.getName());
+
+        PlayerDTO currentPlayerDTO = gameDTO.getPlayersData().get(0);
+        PlayerDTO opponentPlayerDTO = gameDTO.getPlayersData().get(1);
+
+        currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_ERROR_SAME_FIELD);
+        opponentPlayerDTO.setMessage(GameMessages.PLAYER_TURN_MOVE);
+
+        return gameDTO;
+    }
+
+    private GameDTO handleMoveHit(Player currentPlayer, Player opponentPlayer, Point hit) {
+        currentPlayer.addMove(hit, STATUS_HIT);
+        opponentPlayer.addHit(hit);
+
+        GameDTO gameDTO = buildGameData(currentPlayer.getName(), opponentPlayer.getName());
+        PlayerDTO currentPlayerDTO = gameDTO.getPlayersData().get(0);
+        PlayerDTO opponentPlayerDTO = gameDTO.getPlayersData().get(1);
+
+        // set cells for opponent game field in current player screen
+        currentPlayerDTO.setOpponentCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
+
+         // set cells for own game field in opponent player screen
+        opponentPlayerDTO.setOwnCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
+
+        if (opponentPlayer.isLose()) {
+            currentPlayerDTO.setMessage(GameMessages.PLAYER_WIN_GAME);
+            opponentPlayerDTO.setMessage(GameMessages.PLAYER_LOSE_GAME);
+
+            gameInProcess = false;
+        } else {
+            currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_SUCCESS_HIT);
+            if (opponentPlayer.isShipWasDestroyed()) {
+                currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_SHIP_DESTROYED);
+            }
+        }
+
+        return gameDTO;
+    }
+
+    private GameDTO handleMoveMiss(Player currentPlayer, Player opponentPlayer, Point miss) {
+        GameDTO gameDTO = buildGameData(currentPlayer.getName(), opponentPlayer.getName());
+        PlayerDTO currentPlayerDTO = gameDTO.getPlayersData().get(0);
+        PlayerDTO opponentPlayerDTO = gameDTO.getPlayersData().get(1);
+
+        currentPlayer.addMove(miss, STATUS_MISS);
+        // set cells for opponent game field in current player screen
+        currentPlayerDTO.setOpponentCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
+
+        // set cells for own game field in opponent player screen
+        opponentPlayerDTO.setOwnCells(convertPlayerMovesToCells(currentPlayer.getMoves()));
+
+        currentPlayerDTO.setMessage(GameMessages.PLAYER_MOVE_MISS_HIT);
+        opponentPlayerDTO.setMessage(GameMessages.PLAYER_TURN_MOVE);
+
+        return gameDTO;
     }
 }

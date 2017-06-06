@@ -49,7 +49,7 @@ public class ShipBuilder {
 
         for (ShipSetting setting: listSettings) {
             for (int i = 0; i < setting.count; i++) {
-                Ship ship = new Ship(setting.length, setting.color);
+                Ship ship = new Ship(setting.color);
 
                 ArrayList<Point> randomCords = coordsBuilder.buildRandomCoords(setting.length);
                 ship.setCoordinates(randomCords);

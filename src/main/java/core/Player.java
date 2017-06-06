@@ -7,6 +7,7 @@ public class Player {
     private ArrayList<Ship> ships;
     private ArrayList<Move> moves = new ArrayList<>();
     private ShipBuilder builder;
+    private Ship lastAffectedShip;
 
     public Player(String name, ShipBuilder builder) {
         this.name = name;
@@ -44,6 +45,10 @@ public class Player {
         return getScore() == 0;
     }
 
+    public boolean isShipWasDestroyed() {
+        return lastAffectedShip != null && lastAffectedShip.getLength() == 0;
+    }
+
     public void addHit(Point opponentMove) {
         Ship ship = findShipByCords(opponentMove);
 
@@ -52,6 +57,8 @@ public class Player {
         }
 
         ship.addHit(opponentMove);
+
+        lastAffectedShip = ship;
     }
 
     public boolean isMoveWasMade(Point newMove) {
@@ -68,7 +75,6 @@ public class Player {
         return this.ships;
     }
 
-    // temp code for test some idea
     public class Move extends Point {
         private String status;
 
@@ -83,7 +89,6 @@ public class Player {
         }
     }
 
-    // temp code for test some idea
     public Move getLastMove() {
         return this.moves.get(this.moves.size() - 1);
     }

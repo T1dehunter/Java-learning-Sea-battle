@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class PlayerDTO {
     private String name;
-    private String message;
+    private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<Cell> ownCells;
     private ArrayList<Cell> opponentCells;
 
@@ -13,13 +13,13 @@ public class PlayerDTO {
     }
 
     public PlayerDTO setMessage(String message) {
-        this.message = message;
+        this.messages.add(message);
 
         return this;
     }
 
     public PlayerDTO setMessage(GameMessages message) {
-        this.message = message.toString();
+        this.messages.add(message.toString());
 
         return this;
     }
@@ -48,7 +48,7 @@ public class PlayerDTO {
         return opponentCells;
     }
 
-    public String getMessage() {
-        return message;
+    public ArrayList<String> getMessages() {
+        return messages;
     }
 }
