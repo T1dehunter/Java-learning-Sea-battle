@@ -27,12 +27,9 @@ public class GameScreen {
         return opponentField;
     }
 
-    public void build(String data) {
+    public void build(ArrayList<String> data) {
         JFrame mainFrame;
         JPanel controlPanel;
-
-//        playerField.display(data);
-//        opponentField.display(data);
 
         mainFrame = new JFrame("Java Swing Examples");
         mainFrame.setSize(400,400);
@@ -74,9 +71,10 @@ public class GameScreen {
         mainFrame.pack();
     }
 
-    public void setMessage(String message) {
-        if (message != null) {
-            messageLabel.setText(message);
+    public void setMessage(ArrayList<String> messages) {
+        if (messages != null) {
+            String joined = String.join(", ", messages);
+            messageLabel.setText(joined);
         }
     }
 

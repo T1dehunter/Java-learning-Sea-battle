@@ -93,7 +93,7 @@ public class TestCore extends TestCase {
         cords.add(new Point(0, 0));
         cords.add(new Point(0, 1));
         cords.add(new Point(0, 2));
-        Ship ship = new Ship(3, "test");
+        Ship ship = new Ship("test");
         ship.setCoordinates(cords);
         ships.add(ship);
 
@@ -116,7 +116,7 @@ public class TestCore extends TestCase {
         ArrayList<Cell> player1OpponentCells = player1.getOpponentCells();
         ArrayList<Cell> player2OwnCells = player2.getOwnCells();
 
-        assertEquals("Player who made success hit has correct message", GameMessages.PLAYER_MOVE_SUCCESS_HIT.toString(), player1.getMessage());
+        assertEquals("Player who made success hit has correct message", GameMessages.PLAYER_MOVE_SUCCESS_HIT.toString(), player1.getMessages().get(0));
         assertEquals("Score of opponent was correct decreased", (Integer) 2, this.player2.getScore());
 
         assertEquals("Color of cell in player1 opponent field is correct", player1OpponentCells.get(0).getColor(), "green");
@@ -139,7 +139,7 @@ public class TestCore extends TestCase {
         cords.add(new Point(0, 0));
         cords.add(new Point(0, 1));
         cords.add(new Point(0, 2));
-        Ship ship = new Ship(3, "test");
+        Ship ship = new Ship("test");
         ship.setCoordinates(cords);
         ships.add(ship);
 
@@ -162,7 +162,7 @@ public class TestCore extends TestCase {
         ArrayList<Cell> player1OpponentCells = player1.getOpponentCells();
         ArrayList<Cell> player2OwnCells = player2.getOwnCells();
 
-        assertEquals("Player who made miss hit has correct message", GameMessages.PLAYER_MOVE_MISS_HIT.toString(), player1.getMessage());
+        assertEquals("Player who made miss hit has correct message", GameMessages.PLAYER_MOVE_MISS_HIT.toString(), player1.getMessages().get(0));
         assertEquals("Score of opponent was not decreased", (Integer) 3, this.player2.getScore());
 
         assertEquals("Color of cell in player1 opponent field is correct", player1OpponentCells.get(0).getColor(), "red");
@@ -185,7 +185,7 @@ public class TestCore extends TestCase {
         cords.add(new Point(0, 0));
         cords.add(new Point(0, 1));
         cords.add(new Point(0, 2));
-        Ship ship = new Ship(3, "test");
+        Ship ship = new Ship("test");
         ship.setCoordinates(cords);
         ships.add(ship);
 
@@ -210,11 +210,69 @@ public class TestCore extends TestCase {
         ArrayList<Cell> player1OpponentCells = player1.getOpponentCells();
 
 
-        assertEquals(GameMessages.PLAYER_MOVE_SUCCESS_HIT.toString(), player1.getMessage());
+        assertEquals(GameMessages.PLAYER_MOVE_SUCCESS_HIT.toString(), player1.getMessages().get(0));
         assertEquals("Score of opponent was decreased twice", (Integer) 1, this.player2.getScore());
         assertEquals("Count cells is correct", 2, player1OpponentCells.size());
         assertEquals("Cell from first move in opponent field on player screen has correct color", "green", player1OpponentCells.get(0).getColor());
         assertEquals("Cell from second move in opponent field on player screen has correct color", "green", player1OpponentCells.get(1).getColor());
+    }
+
+    public void testHandlePlayerActionWhenPlayerMakesMoveDestroyingOpponentShip() {
+        GuiBuilder builder = mock(GuiBuilder.class);
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(this.player1);
+        players.add(this.player2);
+
+        ArrayList<Ship> ships = new ArrayList<>();
+        ArrayList<Point> cords = new ArrayList<>();
+        cords.add(new Point(0, 0));
+        cords.add(new Point(0, 1));
+        cords.add(new Point(0, 2));
+        Ship ship1 = new Ship("test");
+        ship1.setCoordinates(cords);
+
+        ships.add(ship1);
+
+        ArrayList<Point> cords2 = new ArrayList<>();
+        cords2.add(new Point(9, 0));
+        cords2.add(new Point(9, 1));
+        cords2.add(new Point(9, 2));
+        Ship ship2 = new Ship("test");
+        ship2.setCoordinates(cords2);
+
+        ships.add(ship2);
+
+        this.player2.setShips(ships);
+
+        Core core = new Core(builder, players);
+
+        PlayerAction action1 = new PlayerAction("Player1");
+        action1.setAction("cell selected").setPoint(new Point(0, 0));
+
+        PlayerAction action2 = new PlayerAction("Player1");
+        action2.setAction("cell selected").setPoint(new Point(0, 1));
+
+        PlayerAction action3 = new PlayerAction("Player1");
+        action3.setAction("cell selected").setPoint(new Point(0, 2));
+
+        core.handlePlayerAction(action1);
+        core.handlePlayerAction(action2);
+        core.handlePlayerAction(action3);
+
+        ArgumentCaptor<GameDTO> argument = ArgumentCaptor.forClass(GameDTO.class);
+        verify(builder, times(3)).update(argument.capture());
+
+        GameDTO gameDTOArg = argument.getValue();
+        PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
+        ArrayList<Cell> player1OpponentCells = player1.getOpponentCells();
+
+
+        assertEquals(GameMessages.PLAYER_MOVE_SUCCESS_HIT.toString(), player1.getMessages().get(0));
+        assertEquals(GameMessages.PLAYER_MOVE_SHIP_DESTROYED.toString(), player1.getMessages().get(1));
+//        assertEquals("Score of opponent was decreased twice", (Integer) 1, this.player2.getScore());
+//        assertEquals("Count cells is correct", 2, player1OpponentCells.size());
+//        assertEquals("Cell from first move in opponent field on player screen has correct color", "green", player1OpponentCells.get(0).getColor());
+//        assertEquals("Cell from second move in opponent field on player screen has correct color", "green", player1OpponentCells.get(1).getColor());
     }
 
     public void testHandlePlayerActionWhenSamePlayerMakesSecondMoveOutsideOfQue() {
@@ -224,7 +282,7 @@ public class TestCore extends TestCase {
         player1ShipCords.add(new Point(0, 0));
         player1ShipCords.add(new Point(0, 1));
         player1ShipCords.add(new Point(0, 2));
-        Ship player1Ship = new Ship(3, "test");
+        Ship player1Ship = new Ship("test");
         player1Ship.setCoordinates(player1ShipCords);
         shipsOfPlayer1.add(player1Ship);
 
@@ -232,7 +290,7 @@ public class TestCore extends TestCase {
         player2ShipCords.add(new Point(0, 0));
         player2ShipCords.add(new Point(0, 1));
         player2ShipCords.add(new Point(0, 2));
-        Ship player2Ship = new Ship(3, "test");
+        Ship player2Ship = new Ship("test");
         player2Ship.setCoordinates(player2ShipCords);
         shipsOfPlayer2.add(player2Ship);
 
@@ -253,7 +311,7 @@ public class TestCore extends TestCase {
         GameDTO gameDTOArg = argument.getValue();
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
 
-        assertEquals(GameMessages.PLAYER_MOVE_ERROR.toString(), player1.getMessage());
+        assertEquals(GameMessages.PLAYER_MOVE_ERROR.toString(), player1.getMessages().get(0));
         assertEquals("Score of opponent was not decreased",(Integer) 3, this.player2.getScore());
     }
 
@@ -268,7 +326,7 @@ public class TestCore extends TestCase {
         cords.add(new Point(0, 0));
         cords.add(new Point(0, 1));
         cords.add(new Point(0, 2));
-        Ship ship = new Ship(3, "test");
+        Ship ship = new Ship("test");
         ship.setCoordinates(cords);
         ships.add(ship);
 
@@ -295,7 +353,7 @@ public class TestCore extends TestCase {
         GameDTO gameDTOArg = argument.getValue();
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
 
-        assertEquals(GameMessages.PLAYER_MOVE_ERROR_SAME_FIELD.toString(), player1.getMessage());
+        assertEquals(GameMessages.PLAYER_MOVE_ERROR_SAME_FIELD.toString(), player1.getMessages().get(0));
         assertEquals("Score of opponent was decreased only twice",(Integer) 1, this.player2.getScore());
     }
 
@@ -308,7 +366,7 @@ public class TestCore extends TestCase {
         ArrayList<Ship> ships = new ArrayList<>();
         ArrayList<Point> cords = new ArrayList<>();
         cords.add(new Point(0, 0));
-        Ship ship = new Ship(3, "test");
+        Ship ship = new Ship("test");
         ship.setCoordinates(cords);
         ships.add(ship);
 
@@ -328,8 +386,8 @@ public class TestCore extends TestCase {
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
         PlayerDTO player2 = gameDTOArg.getPlayersData().get(1);
 
-        assertEquals(GameMessages.PLAYER_WIN_GAME.toString(), player1.getMessage());
-        assertEquals(GameMessages.PLAYER_LOSE_GAME.toString(), player2.getMessage());
+        assertEquals(GameMessages.PLAYER_WIN_GAME.toString(), player1.getMessages().get(0));
+        assertEquals(GameMessages.PLAYER_LOSE_GAME.toString(), player2.getMessages().get(0));
     }
 
 
@@ -342,7 +400,7 @@ public class TestCore extends TestCase {
         ArrayList<Ship> ships = new ArrayList<>();
         ArrayList<Point> cords = new ArrayList<>();
         cords.add(new Point(0, 0));
-        Ship ship = new Ship(3, "test");
+        Ship ship = new Ship("test");
         ship.setCoordinates(cords);
         ships.add(ship);
 
@@ -366,8 +424,8 @@ public class TestCore extends TestCase {
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
         PlayerDTO player2 = gameDTOArg.getPlayersData().get(1);
 
-        assertEquals(GameMessages.PLAYER_WIN_GAME.toString(), player1.getMessage());
-        assertEquals(GameMessages.PLAYER_LOSE_GAME.toString(), player2.getMessage());
+        assertEquals(GameMessages.PLAYER_WIN_GAME.toString(), player1.getMessages().get(0));
+        assertEquals(GameMessages.PLAYER_LOSE_GAME.toString(), player2.getMessages().get(0));
     }
 
     public void testHandlePlayerActionWhenPlayerWhoLoseMakesMoveAfterGameEnd() {
@@ -379,7 +437,7 @@ public class TestCore extends TestCase {
         ArrayList<Ship> ships = new ArrayList<>();
         ArrayList<Point> cords = new ArrayList<>();
         cords.add(new Point(0, 0));
-        Ship ship = new Ship(3, "test");
+        Ship ship = new Ship("test");
         ship.setCoordinates(cords);
         ships.add(ship);
 
@@ -403,7 +461,11 @@ public class TestCore extends TestCase {
         PlayerDTO player1 = gameDTOArg.getPlayersData().get(0);
         PlayerDTO player2 = gameDTOArg.getPlayersData().get(1);
 
-        assertEquals(GameMessages.PLAYER_WIN_GAME.toString(), player1.getMessage());
-        assertEquals(GameMessages.PLAYER_LOSE_GAME.toString(), player2.getMessage());
+        assertEquals(GameMessages.PLAYER_WIN_GAME.toString(), player1.getMessages().get(0));
+        assertEquals(GameMessages.PLAYER_LOSE_GAME.toString(), player2.getMessages().get(0));
     }
+
+//    private ArrayList<Ship> buildListShips() {
+//
+//    }
 }

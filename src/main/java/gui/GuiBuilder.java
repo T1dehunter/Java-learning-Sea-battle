@@ -26,7 +26,7 @@ public class GuiBuilder implements PlayerActionHandler {
             PlayerAction action = new PlayerAction(playerData.getName());
 
             screen = new GameScreen(playerGameFieldWidth, playerGameFieldHeight, playerData,this, action);
-            screen.build(playerData.getMessage());
+            screen.build(playerData.getMessages());
 
             playersScreens.put(playerData.getName(), screen);
         }
@@ -46,7 +46,7 @@ public class GuiBuilder implements PlayerActionHandler {
         for (PlayerDTO playerData: gameData.getPlayersData()) {
             GameScreen screen = playersScreens.get(playerData.getName());
 
-            screen.setMessage(playerData.getMessage());
+            screen.setMessage(playerData.getMessages());
 
             ArrayList<Cell> ownCells = playerData.getOwnCells();
             ArrayList<Cell> opponentCells = playerData.getOpponentCells();
