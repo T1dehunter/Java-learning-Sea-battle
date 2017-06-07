@@ -1,6 +1,7 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Player {
     private String name;
@@ -19,13 +20,7 @@ public class Player {
     }
 
     public Integer getScore() {
-        int score = 0;
-
-        for (Ship s: ships) {
-            score += s.getLength();
-        }
-
-        return score;
+        return ships.stream().mapToInt(Ship::getLength).sum();
     }
 
     public void setShips(ArrayList<Ship> ships) {
@@ -62,13 +57,7 @@ public class Player {
     }
 
     public boolean isMoveWasMade(Point newMove) {
-        for (Move m : moves) {
-            if (m.getRow() == newMove.getRow() && m.getCell() == newMove.getCell()) {
-                return true;
-            }
-        }
-
-        return false;
+        return moves.stream().anyMatch(m -> m.getRow() == newMove.getRow() && m.getCell() == newMove.getCell());
     }
 
     public ArrayList<Ship> getShips() {

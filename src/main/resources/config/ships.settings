@@ -5,7 +5,7 @@
         <type>battleship</type>
         <count>1</count>
         <length>4</length>
-        <color>green</color>
+        <color>orange</color>
     </ShipSetting>
 
     <ShipSetting type="cruiser">

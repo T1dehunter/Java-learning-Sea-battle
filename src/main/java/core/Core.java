@@ -4,6 +4,8 @@ import gui.GuiBuilder;
 import gui.PlayerAction;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Core {
     private GuiBuilder builder;
@@ -31,6 +33,8 @@ public class Core {
             player.placeShips();
 
             ArrayList<Ship> ships = player.getShips();
+
+//            ships.stream().map(s -> s.getCoordinates()).forEach((p) -> playerCells.add(new Cell(p.getRow(), p.getCell(), p.getColor())));
 
             for (Ship s : ships) {
                 for (Point p : s.getCoordinates()) {
@@ -92,24 +96,12 @@ public class Core {
         return isPreviousAndCurrentPlayersAreDifferent(currentPlayer) || isCurrentPlayerHasHitOnPreviousMove(currentPlayer);
     }
 
-    private Player getCurrentPlayer(String name) {
-        for (Player player : players) {
-            if (player.getName().equals(name)) {
-                return player;
-            }
-        }
-
-        return null;
+    private Player getCurrentPlayer(String playerName) {
+        return players.stream().filter(p -> p.getName().equals(playerName)).findFirst().orElse(null);
     }
 
     private Player getOpponentPlayer(String playerName) {
-        for (Player player : players) {
-            if (!player.getName().equals(playerName)) {
-                return player;
-            }
-        }
-
-        return null;
+        return players.stream().filter(p -> !p.getName().equals(playerName)).findFirst().orElse(null);
     }
 
     private boolean isPreviousAndCurrentPlayersAreDifferent(Player currentPlayer) {

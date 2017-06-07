@@ -115,8 +115,8 @@ public class CoordsBuilder {
         ArrayList<Point> aroundPoints = getAroundPointsFromPoint(point);
 
         ArrayList<Point> res = aroundPoints.stream()
-                .filter(p -> isPointInField(p))
-                .filter(p -> isPointInBuiltPoints(p))
+                .filter(this::isPointInField)
+                .filter(this::isPointInBuiltPoints)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return res.size() > 0;
