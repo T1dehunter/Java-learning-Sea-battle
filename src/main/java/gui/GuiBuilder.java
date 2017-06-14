@@ -9,14 +9,12 @@ import java.util.Map;
 public class GuiBuilder implements PlayerActionHandler {
     private Core core;
 
-    private int playerGameFieldWidth;
-    private int playerGameFieldHeight;
+    private int playerGameFieldSize;
 
     private Map<String, GameScreen> playersScreens = new HashMap<>();
 
-    public GuiBuilder(int gameFieldWidth, int gameFieldHeight) {
-        this.playerGameFieldWidth = gameFieldWidth;
-        this.playerGameFieldHeight = gameFieldHeight;
+    public GuiBuilder(int playerGameFieldSize) {
+        this.playerGameFieldSize = playerGameFieldSize;
     }
 
     public void build(GameDTO gameData) {
@@ -25,7 +23,7 @@ public class GuiBuilder implements PlayerActionHandler {
 
             PlayerAction action = new PlayerAction(playerData.getName());
 
-            screen = new GameScreen(playerGameFieldWidth, playerGameFieldHeight, playerData,this, action);
+            screen = new GameScreen(playerGameFieldSize, playerData,this, action);
             screen.build(playerData.getMessages());
 
             playersScreens.put(playerData.getName(), screen);
