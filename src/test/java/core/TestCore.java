@@ -47,7 +47,7 @@ public class TestCore extends TestCase {
         players.add(this.player1);
         players.add(this.player2);
 
-        this.builder = new GuiBuilder(10, 10);
+        this.builder = new GuiBuilder(10);
 //        this.core = new Core(this.builder, players, playerGameFieldWidth, playerGameFieldHeight);
     }
 

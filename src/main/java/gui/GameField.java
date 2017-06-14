@@ -20,22 +20,20 @@ class GameField extends JFrame {
     private final JTable table;
 
     public class MyTableModel extends AbstractTableModel {
-        private int width;
-        private int height;
+        private int size;
 
-        public MyTableModel(int width, int height) {
+        public MyTableModel(int fieldSize) {
             super();
 
-            this.width = width;
-            this.height = height;
+            this.size = fieldSize;
         }
         @Override
         public int getRowCount() {
-            return width;
+            return size;
         }
         @Override
         public int getColumnCount() {
-            return height;
+            return size;
         }
         @Override
         public Object getValueAt(int r, int c) {
@@ -43,14 +41,14 @@ class GameField extends JFrame {
         }
     }
 
-    GameField(int width, int height, PlayerActionHandler handler, PlayerAction action) {
+    GameField(int size, PlayerActionHandler handler, PlayerAction action) {
         super("Game field");
 
         this.cords = new ArrayList<>();
         this.handler = handler;
         this.action = action;
 
-        this.model = new MyTableModel(width, height);
+        this.model = new MyTableModel(size);
 
         table = new JTable(this.model);
 
@@ -70,12 +68,12 @@ class GameField extends JFrame {
         });
     }
 
-    GameField(int width, int height, ArrayList<Cell> cells) {
+    GameField(int size, ArrayList<Cell> cells) {
         super("Game field");
 
         this.cords = cells;
 
-        this.model = new MyTableModel(width, height);
+        this.model = new MyTableModel(size);
 
         table = new JTable(this.model);
 

@@ -4,8 +4,6 @@ import gui.GuiBuilder;
 import gui.PlayerAction;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Core {
     private GuiBuilder builder;
@@ -28,25 +26,11 @@ public class Core {
         ArrayList<PlayerDTO> playersData = new ArrayList<PlayerDTO>();
 
         for (Player player: players) {
-            ArrayList<Cell> playerCells = new ArrayList<Cell>();
-
             player.placeShips();
 
-            ArrayList<Ship> ships = player.getShips();
-
-//            ships.stream().map(s -> s.getCoordinates()).forEach((p) -> playerCells.add(new Cell(p.getRow(), p.getCell(), p.getColor())));
-
-            for (Ship s : ships) {
-                for (Point p : s.getCoordinates()) {
-                    playerCells.add(new Cell(p.getRow(), p.getCell(), s.getColor()));
-                }
-            }
-
             PlayerDTO playerData = new PlayerDTO(player.getName());
-
+            playerData.setOwnCells(convertPlayerShipsToCells(player.getShips()));
             playerData.setMessage("Prepare to start game!");
-
-            playerData.setOwnCells(playerCells);
 
             playersData.add(playerData);
         }
@@ -90,18 +74,18 @@ public class Core {
         }
     }
 
-    private boolean isCorrectOrderOfMoveForPlayer(String playerName) {
-        Player currentPlayer = getCurrentPlayer(playerName);
-
-        return isPreviousAndCurrentPlayersAreDifferent(currentPlayer) || isCurrentPlayerHasHitOnPreviousMove(currentPlayer);
-    }
-
     private Player getCurrentPlayer(String playerName) {
         return players.stream().filter(p -> p.getName().equals(playerName)).findFirst().orElse(null);
     }
 
     private Player getOpponentPlayer(String playerName) {
         return players.stream().filter(p -> !p.getName().equals(playerName)).findFirst().orElse(null);
+    }
+
+    private boolean isCorrectOrderOfMoveForPlayer(String playerName) {
+        Player currentPlayer = getCurrentPlayer(playerName);
+
+        return isPreviousAndCurrentPlayersAreDifferent(currentPlayer) || isCurrentPlayerHasHitOnPreviousMove(currentPlayer);
     }
 
     private boolean isPreviousAndCurrentPlayersAreDifferent(Player currentPlayer) {
@@ -121,6 +105,16 @@ public class Core {
             cells.add(new Cell(m.getRow(), m.getCell(), cellColor));
         }
 
+        return cells;
+    }
+
+    private ArrayList<Cell> convertPlayerShipsToCells(ArrayList<Ship> ships) {
+        ArrayList<Cell> cells = new ArrayList<>();
+        for (Ship s : ships) {
+            for (Point p : s.getCoordinates()) {
+                cells.add(new Cell(p.getRow(), p.getCell(), s.getColor()));
+            }
+        }
         return cells;
     }
 

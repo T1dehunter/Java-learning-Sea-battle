@@ -8,27 +8,25 @@ public class CoordsBuilder {
     private Random randGen = new Random();
     private String[] directions = {"left", "right", "top", "bottom"};
 
-    private ArrayList<Point> buildedPoints = new ArrayList<Point>();
-    private int fieldWith;
-    private int fieldHeight;
-    private final int maxNumberOfAttempsForCalculateCoords = 1000;
+    private ArrayList<Point> builtPoints = new ArrayList<>();
+    private int fieldSize;
 
-    public CoordsBuilder(int fieldWith, int fieldHeight) {
-        this.fieldWith = fieldWith;
-        this.fieldHeight = fieldHeight;
+    public CoordsBuilder(int fieldSize) {
+        this.fieldSize = fieldSize;
     }
 
     public ArrayList<Point> buildRandomCoords(Integer cordsLength) {
+        int maxNumberOfAttemptsForCalculateCoords = 1000;
         ArrayList<Point> randomCoords = new ArrayList<>();
 
         // mb should later add custom exception
-        for (int i = 0; i < maxNumberOfAttempsForCalculateCoords; i++) {
+        for (int i = 0; i < maxNumberOfAttemptsForCalculateCoords; i++) {
             Point randomPointFrom = getRandomPoint();
             String randomDirection = getRandomDirection();
 
             randomCoords = buildFromPoint(randomPointFrom, randomDirection, cordsLength);
 
-            if (randomCoords.size() > 0) {
+            if (randomCoords.size() == cordsLength) {
                 break;
             }
         }
@@ -37,7 +35,7 @@ public class CoordsBuilder {
     }
 
     public ArrayList<Point> buildFromPoint(Point startPoint, String direction, int length) {
-        ArrayList<Point> res = new ArrayList<Point>();
+        ArrayList<Point> res = new ArrayList<>();
 
         res.add(startPoint);
 
@@ -48,10 +46,10 @@ public class CoordsBuilder {
         }
 
         if (!isCordsCorrect(res)) {
-            return new ArrayList<Point>();
+            return new ArrayList<>();
         }
 
-        buildedPoints.addAll(res);
+        builtPoints.addAll(res);
 
         return res;
     }
@@ -64,7 +62,7 @@ public class CoordsBuilder {
     }
 
     private int getRandomNumber() {
-        return randGen.nextInt(fieldWith);
+        return randGen.nextInt(fieldSize);
     }
 
     private String getRandomDirection() {
@@ -94,7 +92,7 @@ public class CoordsBuilder {
     }
 
     private boolean isPointOutsideOfField(Point point) {
-        return point.getRow() < 0 || point.getRow() > (fieldWith - 1) || point.getCell() < 0 || point.getCell() > (fieldWith -1);
+        return point.getRow() < 0 || point.getRow() > (fieldSize - 1) || point.getCell() < 0 || point.getCell() > (fieldSize -1);
     }
 
     private boolean isPointInField(Point point) {
@@ -102,7 +100,7 @@ public class CoordsBuilder {
     }
 
     private boolean isPointInBuiltPoints(Point newPoint) {
-        for (Point existsPoint: buildedPoints) {
+        for (Point existsPoint: builtPoints) {
             if (existsPoint.getRow() == newPoint.getRow() && existsPoint.getCell() == newPoint.getCell()) {
                 return true;
             }

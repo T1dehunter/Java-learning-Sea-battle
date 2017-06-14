@@ -10,8 +10,7 @@ public class Main {
         TestClasses test = new TestClasses();
         test.run();
 
-        GameSettings settings = new GameSettings("config/config.properties");
-        Properties props = settings.getSettings();
+        Properties props = new GameSettings("config/config.properties").getSettings();
 
         PlayerCreator creator = new PlayerCreator(props);
 
@@ -20,10 +19,9 @@ public class Main {
         players.add(creator.create("Player1"));
         players.add(creator.create("Player2"));
 
-        int playerFieldWidth = Integer.parseInt(props.getProperty("width"));
-        int playerFieldHeight = Integer.parseInt(props.getProperty("height"));
+        int playerFieldSize = Integer.parseInt(props.getProperty("fieldSize"));
 
-        GuiBuilder builder = new GuiBuilder(playerFieldWidth, playerFieldHeight);
+        GuiBuilder builder = new GuiBuilder(playerFieldSize);
         Core core = new Core(builder, players);
         builder.setCore(core);
 

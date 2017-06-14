@@ -14,9 +14,9 @@ public class GameScreen {
 
     private JLabel messageLabel;
 
-    public GameScreen(int gameFieldWidth, int gameFieldHeight, PlayerDTO playerData, PlayerActionHandler handler, PlayerAction action) {
-        this.playerField = new GameField(gameFieldWidth, gameFieldHeight, playerData.getOwnCells());
-        this.opponentField = new GameField(gameFieldWidth, gameFieldHeight, handler, action);
+    public GameScreen(int fieldSize, PlayerDTO playerData, PlayerActionHandler handler, PlayerAction action) {
+        this.playerField = new GameField(fieldSize, playerData.getOwnCells());
+        this.opponentField = new GameField(fieldSize, handler, action);
     }
 
     public GameField getPlayerField() {
