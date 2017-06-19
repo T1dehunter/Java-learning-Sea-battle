@@ -40,26 +40,10 @@ public class GuiBuilder implements PlayerActionHandler {
     }
 
     public void update(GameDTO gameData) {
-        System.out.print("game dto");
         for (PlayerDTO playerData: gameData.getPlayersData()) {
             GameScreen screen = playersScreens.get(playerData.getName());
 
-            screen.setMessage(playerData.getMessages());
-
-            ArrayList<Cell> ownCells = playerData.getOwnCells();
-            ArrayList<Cell> opponentCells = playerData.getOpponentCells();
-            GameField fieldForUpdate;
-            if (ownCells != null) {
-                fieldForUpdate = screen.getPlayerField();
-                fieldForUpdate.display(ownCells.get(ownCells.size() - 1));
-            }
-
-            if (opponentCells != null) {
-                fieldForUpdate = screen.getOpponentField();
-                fieldForUpdate.display(opponentCells.get(opponentCells.size() - 1));
-            }
-
-//            screen.update(playerData);
+            screen.update(playerData);
         }
     }
 }
