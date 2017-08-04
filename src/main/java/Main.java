@@ -19,9 +19,7 @@ public class Main {
         players.add(creator.create("Player1"));
         players.add(creator.create("Player2"));
 
-        int playerFieldSize = Integer.parseInt(props.getProperty("fieldSize"));
-
-        GuiBuilder builder = new GuiBuilder(playerFieldSize);
+        GuiBuilder builder = new GuiBuilder(Integer.parseInt(props.getProperty("fieldSize")));
         Core core = new Core(builder, players);
         builder.setCore(core);
 
