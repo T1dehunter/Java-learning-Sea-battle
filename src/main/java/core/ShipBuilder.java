@@ -24,24 +24,12 @@ public class ShipBuilder {
 
         @XmlElement(name = "color")
         private String color;
-
-        public String test() {
-            return "\n type: " + type + "| count: " + count + "| length: " + length + "| color: " + color;
-        }
     }
     @XmlElement(name="ShipSetting")
     private List<ShipSetting> listSettings;
 
-    public ShipBuilder() {
-        System.out.print("TEST SHIP BUILDER");
-    }
-
     public void setCordsBuilder(CoordsBuilder coordsBuilder) {
         this.coordsBuilder = coordsBuilder;
-    }
-
-    public ShipSetting getShipByType() {
-        return listSettings.get(1);
     }
 
     public ArrayList<Ship> buildListShips() {

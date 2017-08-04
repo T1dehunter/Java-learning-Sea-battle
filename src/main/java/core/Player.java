@@ -7,12 +7,12 @@ public class Player {
     private String name;
     private ArrayList<Ship> ships;
     private ArrayList<Move> moves = new ArrayList<>();
-    private ShipBuilder builder;
+    private ShipBuilder shipBuilder;
     private Ship lastAffectedShip;
 
-    public Player(String name, ShipBuilder builder) {
+    public Player(String name, ShipBuilder shipBuilder) {
         this.name = name;
-        this.builder = builder;
+        this.shipBuilder = shipBuilder;
     }
 
     public String getName() {
@@ -28,7 +28,7 @@ public class Player {
     }
 
     public void placeShips() {
-        this.ships = builder.buildListShips();
+        this.ships = shipBuilder.buildListShips();
     }
 
     public boolean isHit(Point opponentMove) {

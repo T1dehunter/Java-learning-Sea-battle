@@ -9,14 +9,12 @@ import java.util.Map;
 public class GuiBuilder implements PlayerActionHandler {
     private Core core;
 
-    private int playerGameFieldWidth;
-    private int playerGameFieldHeight;
+    private int playerGameFieldSize;
 
     private Map<String, GameScreen> playersScreens = new HashMap<>();
 
-    public GuiBuilder(int gameFieldWidth, int gameFieldHeight) {
-        this.playerGameFieldWidth = gameFieldWidth;
-        this.playerGameFieldHeight = gameFieldHeight;
+    public GuiBuilder(int playerGameFieldSize) {
+        this.playerGameFieldSize = playerGameFieldSize;
     }
 
     public void build(GameDTO gameData) {
@@ -25,7 +23,7 @@ public class GuiBuilder implements PlayerActionHandler {
 
             PlayerAction action = new PlayerAction(playerData.getName());
 
-            screen = new GameScreen(playerGameFieldWidth, playerGameFieldHeight, playerData,this, action);
+            screen = new GameScreen(playerGameFieldSize, playerData,this, action);
             screen.build(playerData.getMessages());
 
             playersScreens.put(playerData.getName(), screen);
@@ -42,26 +40,10 @@ public class GuiBuilder implements PlayerActionHandler {
     }
 
     public void update(GameDTO gameData) {
-        System.out.print("game dto");
         for (PlayerDTO playerData: gameData.getPlayersData()) {
             GameScreen screen = playersScreens.get(playerData.getName());
 
-            screen.setMessage(playerData.getMessages());
-
-            ArrayList<Cell> ownCells = playerData.getOwnCells();
-            ArrayList<Cell> opponentCells = playerData.getOpponentCells();
-            GameField fieldForUpdate;
-            if (ownCells != null) {
-                fieldForUpdate = screen.getPlayerField();
-                fieldForUpdate.display(ownCells.get(ownCells.size() - 1));
-            }
-
-            if (opponentCells != null) {
-                fieldForUpdate = screen.getOpponentField();
-                fieldForUpdate.display(opponentCells.get(opponentCells.size() - 1));
-            }
-
-//            screen.update(playerData);
+            screen.update(playerData);
         }
     }
 }

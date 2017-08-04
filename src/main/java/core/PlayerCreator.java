@@ -37,7 +37,7 @@ public class PlayerCreator {
         }
 
         if (builder != null) {
-            CoordsBuilder cb = new CoordsBuilder(Integer.parseInt(gameSettings.getProperty("width")), Integer.parseInt(gameSettings.getProperty("height")));
+            CoordsBuilder cb = new CoordsBuilder(Integer.parseInt(gameSettings.getProperty("fieldSize")));
             builder.setCordsBuilder(cb);
         }
 

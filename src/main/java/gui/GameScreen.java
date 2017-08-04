@@ -7,24 +7,15 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-
 public class GameScreen {
     private GameField playerField;
     private GameField opponentField;
 
     private JLabel messageLabel;
 
-    public GameScreen(int gameFieldWidth, int gameFieldHeight, PlayerDTO playerData, PlayerActionHandler handler, PlayerAction action) {
-        this.playerField = new GameField(gameFieldWidth, gameFieldHeight, playerData.getOwnCells());
-        this.opponentField = new GameField(gameFieldWidth, gameFieldHeight, handler, action);
-    }
-
-    public GameField getPlayerField() {
-        return playerField;
-    }
-
-    public GameField getOpponentField() {
-        return opponentField;
+    public GameScreen(int fieldSize, PlayerDTO playerData, PlayerActionHandler handler, PlayerAction action) {
+        this.playerField = new GameField(fieldSize, playerData.getOwnCells());
+        this.opponentField = new GameField(fieldSize, handler, action);
     }
 
     public void build(ArrayList<String> data) {
@@ -71,19 +62,25 @@ public class GameScreen {
         mainFrame.pack();
     }
 
-    public void setMessage(ArrayList<String> messages) {
+    public void update(PlayerDTO playerData) {
+        ArrayList<Cell> ownCells = playerData.getOwnCells();
+        ArrayList<Cell> opponentCells = playerData.getOpponentCells();
+
+        setMessage(playerData.getMessages());
+
+        if (ownCells != null) {
+            playerField.display(ownCells.get(ownCells.size() - 1));
+        }
+
+        if (opponentCells != null) {
+            opponentField.display(opponentCells.get(opponentCells.size() - 1));
+        }
+    }
+
+    private void setMessage(ArrayList<String> messages) {
         if (messages != null) {
             String joined = String.join(", ", messages);
             messageLabel.setText(joined);
         }
-    }
-
-    public void update(PlayerDTO playerData) {
-        /*
-        *  get player cells, update field with player cells
-        *  get enemy cells, update field with enemy cells
-        *
-        *
-        * */
     }
 }

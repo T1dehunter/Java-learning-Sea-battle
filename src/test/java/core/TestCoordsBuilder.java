@@ -14,7 +14,7 @@ public class TestCoordsBuilder extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        this.coordsBuilder = new CoordsBuilder(10, 10);
+        this.coordsBuilder = new CoordsBuilder(10);
     }
 
     public void testBuildCoordsFromPointShouldReturnArrayOfPointsWithCorrectLength() {
