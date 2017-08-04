@@ -7,8 +7,8 @@ import java.util.Properties;
 
 public class Main {
     public static void main(String[] args) {
-        TestClasses test = new TestClasses();
-        test.run();
+//        TestClasses test = new TestClasses();
+//        test.run();
 
         GameSettings settings = new GameSettings("config/config.properties");
         Properties props = settings.getSettings();
